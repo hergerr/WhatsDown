@@ -1,12 +1,10 @@
-from flask import Flask
-
-app = Flask(__name__)
+from whatsdown import app
 
 
 @app.route('/')
-def hello_world():
-    return 'Hello World!'
+def home_page():
+    return 'Hello doge'
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
