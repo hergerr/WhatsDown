@@ -3,6 +3,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from .config import name, db_name, password
+import flask_admin
+from flask_admin.contrib.sqla import ModelView
 
 app = Flask(__name__)
 
@@ -12,4 +14,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 Migrate(app, db)
-from .models import *
+from .models import Administrator
+
+app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+admin = flask_admin.Admin(app)
+admin.add_view(ModelView(Administrator, db.session))
