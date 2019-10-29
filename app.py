@@ -1,13 +1,25 @@
-from whatsdown import app
 from flask import render_template
-import vlc
+from whatsdown import app
 
 
 @app.route('/')
 def home_page():
-    sad_song = vlc.MediaPlayer('whatsdown/media/chopin_funeral.mp3')
-    sad_song.play()
     return render_template('home.html')
+
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
+
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
 
 
 if __name__ == '__main__':
