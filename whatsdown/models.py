@@ -178,8 +178,7 @@ class Funeral(db.Model):
     total_price = db.Column(db.Integer)
 
     # foreign keys
-    funeral_home_id = db.Column(
-        db.Integer, ForeignKey('funeral_home.id'), nullable=True)
+    funeral_home_id = db.Column(db.Integer, ForeignKey('funeral_home.id'), nullable=True)
 
     # bidirectional relationships
     buried = relationship("Buried", back_populates="funeral")
