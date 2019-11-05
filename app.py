@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for
 from whatsdown import app, db
-from whatsdown.forms import LoginForm, RegisterForm
-from whatsdown.models import Administrator
+from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm
+from whatsdown.models import Administrator, User
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, login_user, logout_user
 
@@ -17,12 +17,18 @@ def login():
 
     if form.validate_on_submit():
         admin = Administrator.query.filter_by(login=form.username.data).first()
+        user = User.query.filter_by(login=form.username.data).first()
         if admin:
             if check_password_hash(admin.password, form.password.data):
                 login_user(admin, remember=form.remember.data)
                 return redirect(url_for('dashboard'))
-
-        return 'Invalid username or password'
+        elif user:
+            print('Dupa')
+            if check_password_hash(user.password, form.password.data):
+                login_user(user, remember=form.remember.data)
+                return redirect(url_for('home_page'))
+        else:
+            return 'Invalid username or password'
 
     return render_template('login.html', form=form)
 
@@ -34,17 +40,32 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    form = RegisterForm()
+@app.route('/signup-admin', methods=['GET', 'POST'])
+def signup_admin():
+    form = RegisterAdminForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
         new_admin = Administrator(login=form.username.data, password=hashed_password)
         db.session.add(new_admin)
         db.session.commit()
+        return 'New admin created'
 
-        return 'Created new user'
-    return render_template('signup.html', form=form)
+    return render_template('signup-admin.html', form=form)
+
+
+@app.route('/signup-user', methods=['GET', 'POST'])
+def signup_user():
+    form = RegisterUserForm()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data, method='sha256')
+        new_user = User(login=form.username.data, password=hashed_password, name=form.name.data,
+                        voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
+                        phone=form.phone.data, price=form.phone.data)
+        db.session.add(new_user)
+        db.session.commit()
+        return 'New funeral agency created'
+
+    return render_template('signup-user.html', form=form)
 
 
 @app.route('/dashboard')
