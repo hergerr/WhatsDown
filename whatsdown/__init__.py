@@ -35,12 +35,8 @@ def load_admin(user_id):
 
 class CustomModelView(ModelView):
     def is_accessible(self):
-
-        if hasattr(current_user, 'is_admin'):
-            if current_user.is_admin:
-                return current_user.is_authenticated
-            else:
-                return abort(404)
+        if hasattr(current_user, 'is_admin') and current_user.is_admin:
+            return current_user.is_authenticated
         else:
             return abort(404)
 

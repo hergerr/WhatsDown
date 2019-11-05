@@ -33,7 +33,6 @@ class User(db.Model, UserMixin):
     price = db.Column(db.Integer)
     login = db.Column(db.String(30), nullable=False, unique=True)
     password = db.Column(db.String(30), nullable=False)
-    is_admin = db.Column(db.Boolean, default=False)
 
     # bidirectional relationships
     funerals = relationship("Funeral", back_populates="funeral_home")
