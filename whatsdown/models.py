@@ -14,6 +14,7 @@ class Administrator(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     login = db.Column(db.String(30), nullable=False, unique=True)
     password = db.Column(db.String(30), nullable=False)
+    is_admin = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         return 'Administrator %d, login %s' % (format(self.id), format(self.login))
@@ -32,6 +33,7 @@ class User(db.Model, UserMixin):
     price = db.Column(db.Integer)
     login = db.Column(db.String(30), nullable=False, unique=True)
     password = db.Column(db.String(30), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
     # bidirectional relationships
     funerals = relationship("Funeral", back_populates="funeral_home")

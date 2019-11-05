@@ -16,7 +16,7 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        admin = Administrator.query.filter_by(name=form.username.data).first()
+        admin = Administrator.query.filter_by(login=form.username.data).first()
         if admin:
             if check_password_hash(admin.password, form.password.data):
                 login_user(admin, remember=form.remember.data)
@@ -39,7 +39,7 @@ def signup():
     form = RegisterForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_admin = Administrator(name=form.username.data, password=hashed_password)
+        new_admin = Administrator(login=form.username.data, password=hashed_password)
         db.session.add(new_admin)
         db.session.commit()
 
