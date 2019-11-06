@@ -17,7 +17,7 @@ class Administrator(db.Model, UserMixin):
     is_admin = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
-        return 'Administrator %d, login %s' % (format(self.id), format(self.login))
+        return f'Administrator {self.id}, login {self.login}'
 
 
 class User(db.Model, UserMixin):
@@ -38,7 +38,7 @@ class User(db.Model, UserMixin):
     funerals = relationship("Funeral", back_populates="funeral_home")
 
     def __repr__(self):
-        return 'Dom pogrzebowy {}'.format(self.name)
+        return f'Dom pogrzebowy {self.name}'
 
 
 class Tombstone(db.Model):  # connected with quarter o-t-m
@@ -53,7 +53,7 @@ class Tombstone(db.Model):  # connected with quarter o-t-m
     quarter = relationship("Quarter", back_populates="tombstone")
 
     def __repr__(self):
-        return 'Nagrobek marki %s, model %s' % (format(self.manufacturer), format(self.material))
+        return f'Nagrobek marki {self.manufacturer}, model {self.material}'
 
 
 class Quarter(db.Model):
@@ -77,7 +77,7 @@ class Quarter(db.Model):
     tombstone = relationship("Tombstone", back_populates="quarter")
 
     def __repr__(self):
-        return 'Kwatera na cmentarzu nr %d, x %d, y %d' % (self.cemetery_id, self.x_coord, self.y_coord)
+        return f'Kwatera na cmentarzu nr {self.cemetery_id}, x={self.x_coord}, y={self.y_coord}'
 
 
 class Cemetery(db.Model):
@@ -95,8 +95,7 @@ class Cemetery(db.Model):
     quarters = relationship("Quarter", back_populates="cemetery")
 
     def __repr__(self):
-        return 'Cmentarz w woj. %s, powiat %s, miejscowość %s, ulica %s ' % (
-            format(self.voivodeship), format(self.county), format(self.locality), format(self.street))
+        return f'Cmentarz w woj. {self.voivodeship}, powiat {self.county}, miejscowość {self.locality}, ulica {self.street}'
 
 
 class Outfit(db.Model):
@@ -115,8 +114,7 @@ class Outfit(db.Model):
     buried = relationship("Buried", back_populates="outfit")
 
     def __repr__(self):
-        return '%s, marki  %s, rozmiar %s, w kolorze %s' % (
-            format(self.type_of_clothing), format(self.brand), format(self.size), format(self.color))
+        return f'{self.type_of_clothing}, marki  {self.brand}, rozmiar {self.size}, w kolorze {self.color}'
 
 
 class Container(db.Model):
@@ -134,7 +132,7 @@ class Container(db.Model):
     buried = relationship("Buried", back_populates="container")
 
     def __repr__(self):
-        return 'Pojemnik %s, wykonany z %s' % (format(self.manufacturer), format(self.material))
+        return f'Pojemnik {self.manufacturer}, wykonany z {self.material}'
 
 
 class Buried(db.Model):
@@ -164,7 +162,7 @@ class Buried(db.Model):
     outfit = relationship("Outfit", back_populates="buried")
 
     def __repr__(self):
-        return 'Pochowany %s %s' % (format(self.first_name), format(self.last_name))
+        return f'Pochowany {self.first_name} {self.last_name}'
 
 
 class Funeral(db.Model):
@@ -186,7 +184,7 @@ class Funeral(db.Model):
     funeral_home = relationship("User", back_populates="funerals")
 
     def __repr__(self):
-        return 'Pogrzeb nr {}'.format(self.id)
+        return f'Pogrzeb nr {self.id}'
 
     # table many-to-many
     priest_temple = db.Table('priest_temple',
@@ -207,7 +205,7 @@ class Priest(db.Model):
     price = db.Column(db.Integer)
 
     def __repr__(self):
-        return 'Kapłan {}, {}' % (format(self.first_name), format(self.last_name))
+        return f'Kapłan {self.first_name}, {self.last_name}'
 
 
 class Temple(db.Model):
@@ -224,5 +222,4 @@ class Temple(db.Model):
     rank = db.Column(db.Text)
 
     def __repr__(self):
-        return 'Swiątynia wyznania {}, umiejscowiona w {}, {}, {}' % (
-            format(self.religion), format(self.voivodeship), format(self.county), format(self.locality))
+        return f'Swiątynia wyznania {self.religion}, umiejscowiona w {self.voivodeship}, {self.county}, {self.locality}'

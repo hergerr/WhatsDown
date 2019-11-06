@@ -21,9 +21,8 @@ def login():
         if admin:
             if check_password_hash(admin.password, form.password.data):
                 login_user(admin, remember=form.remember.data)
-                return redirect(url_for('dashboard'))
+                return redirect('/admin')
         elif user:
-            print('Dupa')
             if check_password_hash(user.password, form.password.data):
                 login_user(user, remember=form.remember.data)
                 return redirect(url_for('home_page'))
