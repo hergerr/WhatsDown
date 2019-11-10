@@ -10,7 +10,7 @@ from flask_login import login_required, login_user, logout_user
 def home_page():
     form = SearchForm()
     if form.validate_on_submit():
-        print(form.phrase.data)
+        redirect(url_for('search'))
     return render_template('home.html', form=form)
 
 
