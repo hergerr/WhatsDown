@@ -1,14 +1,22 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, session
 from whatsdown import app, db
-from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm
+from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm, SearchForm
 from whatsdown.models import Administrator, User
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, login_user, logout_user
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home_page():
-    return render_template('home.html')
+    form = SearchForm()
+    if form.validate_on_submit():
+        print(form.phrase.data)
+    return render_template('home.html', form=form)
+
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    return "nothing"
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -59,7 +67,7 @@ def signup_user():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
         new_user = User(login=form.username.data, password=hashed_password, name=form.name.data,
                         voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
-                        phone=form.phone.data, price=form.phone.data)
+                        phone=form.phone.data, price=form.price.data)
         db.session.add(new_user)
         db.session.commit()
         return 'New funeral agency created'

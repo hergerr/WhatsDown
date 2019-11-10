@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, IntegerField
+from wtforms import StringField, PasswordField, BooleanField, IntegerField, SelectField
 from wtforms.validators import InputRequired
 
 
@@ -24,3 +24,13 @@ class RegisterUserForm(FlaskForm):
     locality = StringField('locality', validators=[InputRequired()])
     phone = StringField('phone', validators=[InputRequired()])
     price = IntegerField('price', validators=[InputRequired()])
+
+
+class SearchForm(FlaskForm):
+    phrase = StringField('phrase', validators=[InputRequired()])
+    category = SelectField('category', choices=[('buried', 'Buried'), ('funeral', 'Funeral'), ('cemetery', 'Cemetery'),
+                                                ('quarter', 'Quarter'), ('outfit', 'Outfit'),
+                                                ('tombstone', 'Tombstone'), ('container', 'Container'),
+                                                ('priest', 'Priest'), ('temple', 'Temple'), ('funeral_home',
+                                                                                             'Funeral home')],
+                           validators=[InputRequired()])
