@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, session
+from flask import render_template, redirect, url_for, session, request
 from whatsdown import app, db
 from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm, SearchForm
 from whatsdown.models import Administrator, User
@@ -16,7 +16,7 @@ def home_page():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
-    return "nothing"
+    return request.args
 
 
 @app.route('/login', methods=['GET', 'POST'])
