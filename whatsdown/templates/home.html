@@ -29,7 +29,7 @@
                     <li><a href="{{ url_for('login') }}">Login</a></li>
                     <li><a href="{{ url_for('signup_user') }}">Sign Up</a></li>
                 </ul>
-            </div><!--/.nav-collapse -->
+            </div>
         </div>
     </nav>
 
@@ -40,18 +40,13 @@
             and a mostly barebones HTML document.</p>
     </div>
 
-    <form method="post", action="/search">
+    <form method="GET" name="search" action="/search">
         <div class="form-group">
-            {{ form.hidden_tag() }}
             {{ wtf.form_field(form.category) }}
+            {{ wtf.form_field(form.phrase) }}
         </div>
 
-
-    <div class="form-group">
-        {{ wtf.form_field(form.phrase) }}
-    </div>
-
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
     </form>
 
     </div><!-- /.container -->
