@@ -42,15 +42,12 @@
 
     <form method="post", action="/search">
         <div class="form-group">
-            <label for="category">Choose the category you want to search in</label>
             {{ form.hidden_tag() }}
             {{ wtf.form_field(form.category) }}
         </div>
 
 
     <div class="form-group">
-        <label for="exampleFormControlTextarea1">Enter the phrase you want to search for</label>
-        {{ form.hidden_tag() }}
         {{ wtf.form_field(form.phrase) }}
     </div>
 

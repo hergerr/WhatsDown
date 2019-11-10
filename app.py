@@ -6,15 +6,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, login_user, logout_user
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
 def home_page():
     form = SearchForm()
     if form.validate_on_submit():
-        print(form.phrase.data)
+        print(form.category.data)
     return render_template('home.html', form=form)
 
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/search', methods=['GET'])
 def search():
     return "nothing"
 
