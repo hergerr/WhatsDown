@@ -1,7 +1,7 @@
-from flask import render_template, redirect, url_for, session, request
+from flask import render_template, redirect, url_for, request
 from whatsdown import app, db
 from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm, SearchForm
-from whatsdown.models import Administrator, User
+from whatsdown.models import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, login_user, logout_user
 
@@ -16,7 +16,32 @@ def home_page():
 
 @app.route('/search', methods=['GET'])
 def search():
-    return request.args
+    category = str(request.args["category"])
+    table = Buried
+    if category == "buried":
+        table = Buried
+    elif category == "funeral":
+        table = Funeral
+    elif category == "cemetery":
+        table = Cemetery
+    elif category == "quarter":
+        table = Quarter
+    elif category == "outfit":
+        table = Outfit
+    elif category == "tombstone":
+        table = Tombstone
+    elif category == "container":
+        table = Container
+    elif category == "priest":
+        table = Priest
+    elif category == "temple":
+        table = Temple
+    elif category == "funeral_home":
+        table = User
+
+    for record in table.query.all():
+        print(record)
+    return render_template('search.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
