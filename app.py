@@ -39,9 +39,10 @@ def search():
     elif category == "funeral_home":
         table = User
 
-    for record in table.query.all():
-        print(record)
-    return render_template('search.html')
+    header_content = ['Nazwa', 'Województwo', 'Powiat', 'Miejscowość', 'Telefon', 'Cena']
+
+    result = table.query.all()
+    return render_template('search.html', result=result, category=category, header_content=header_content)
 
 
 @app.route('/login', methods=['GET', 'POST'])

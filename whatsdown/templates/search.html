@@ -33,4 +33,27 @@
         </div>
     </nav>
 
+    <table style="width:100%">
+
+        {% if category == 'buried' %}
+            <tr>
+                {% for header in header_content %}
+                    <th>{{ header }}</th>
+                {% endfor %}
+            </tr>
+            {% for record in result %}
+                <tr>
+                    <td>{{ record.name }}</td>
+                    <td>{{ record.voivodeship }}</td>
+                    <td>{{ record.county }}</td>
+                    <td>{{ record.locality }}</td>
+                    <td>{{ record.phone }}</td>
+                    <td>{{ record.price }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <h1>Kategoria nieobsługiwana</h1>
+        {% endif %}
+    </table>
+
 {% endblock %}
