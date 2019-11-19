@@ -39,10 +39,10 @@ def search():
     elif category == "funeral_home":
         table = User
 
-    header_content = ['Nazwa', 'Województwo', 'Powiat', 'Miejscowość', 'Telefon', 'Cena']
+    column_names = table.__table__.columns.keys()  # get columns names
+    records = table.query.all()  # get table records
 
-    result = table.query.all()
-    return render_template('search.html', result=result, category=category, header_content=header_content)
+    return render_template('search.html', column_names=column_names, records=records)
 
 
 @app.route('/login', methods=['GET', 'POST'])
