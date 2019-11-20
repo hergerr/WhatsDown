@@ -1,7 +1,8 @@
 from flask import render_template, redirect, url_for
 from whatsdown import app, db
+from collections import Counter
 from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm
-from whatsdown.models import Administrator, User
+from whatsdown.models import Administrator, User, Priest, Buried, Outfit
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, login_user, logout_user
 
@@ -30,6 +31,27 @@ def login():
             return 'Invalid username or password'
 
     return render_template('login.html', form=form)
+
+
+@app.route('/statistics')
+def statistics():
+    most_exclusive_priest = Priest.query.order_by(Priest.price)[-1]
+
+    funeral_houses = User.query.all()
+    sum_price = 0
+    for funeral_house in funeral_houses:
+        sum_price += funeral_house.price
+    avg_fun_house_price = sum_price / len(funeral_houses)
+
+    buried_number = len(Buried.query.all())
+
+    outfits = Outfit.query.all()
+    counter = Counter([brand.brand for brand in outfits])
+    most_popular_outfit_brand = counter.most_common(1)[0]
+
+    return render_template('statistics.html', most_exclusive_priest=most_exclusive_priest,
+                           avg_fun_house_price=avg_fun_house_price, buried_number=buried_number,
+                           most_popular_outfit_brand=most_popular_outfit_brand)
 
 
 @app.route('/logout')
