@@ -5,10 +5,6 @@ from sqlalchemy import ForeignKey
 from datetime import date, datetime
 
 
-# czy 'data' to to samo co "data"?
-# w szczególności przy oznaczaniu rodziców i dzieci w kluczach obcych ('parent) vs ("parent")
-
-
 class Administrator(db.Model, UserMixin):
     __tablename__ = 'administrator'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
@@ -35,7 +31,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(30), nullable=False)
 
     # bidirectional relationships
-    funerals = relationship("Funeral", back_populates="funeral_home")
+    funerals = relationship("Funeral", back_populates="funeral_home", cascade="save-update, merge, delete")
 
     def __repr__(self):
         return f'Dom pogrzebowy {self.name}'
@@ -73,7 +69,7 @@ class Quarter(db.Model):
 
     # relationships
     cemetery = relationship("Cemetery", back_populates="quarters")
-    buried = relationship("Buried", back_populates="quarter", passive_deletes='all')
+    buried = relationship("Buried", back_populates="quarter", cascade="save-update, merge, delete")
     tombstone = relationship("Tombstone", back_populates="quarter")
 
     def __repr__(self):
@@ -92,7 +88,7 @@ class Cemetery(db.Model):
     faith = db.Column(db.Text)
 
     # bidirectional relationships
-    quarters = relationship("Quarter", back_populates="cemetery", passive_deletes='all')
+    quarters = relationship("Quarter", back_populates="cemetery", cascade="save-update, merge, delete")
 
     def __repr__(self):
         return f'Cmentarz w woj. {self.voivodeship}, powiat {self.county}, miejscowość {self.locality}, ulica {self.street}'
@@ -178,20 +174,31 @@ class Funeral(db.Model):
 
     # foreign keys
     funeral_home_id = db.Column(db.Integer, ForeignKey('funeral_home.id'), nullable=True)
-
-    # bidirectional relationships
-    buried = relationship("Buried", back_populates="funeral", passive_deletes='all')
+    priest_temple_id = db.Column(db.Integer, ForeignKey('priest_temple.id'), nullable=True)
+   
+    #relationships
+    buried = relationship("Buried", back_populates="funeral", cascade="save-update, merge, delete")
     funeral_home = relationship("User", back_populates="funerals")
+    priest_temple = relationship("Priest_Temple", back_populates="funerals2")
 
     def __repr__(self):
         return f'Pogrzeb nr {self.id}'
 
-#table many-to-many
-priest_temple = db.Table('priest_temple',
-    db.Column('priest_id', db.Integer(), db.ForeignKey('priest.id')),
-    db.Column('temple_id', db.Integer(), db.ForeignKey('temple.id'))
-    )
 
+class Priest_Temple(db.Model):
+    __tablename__ = 'priest_temple'
+    priest_id = db.Column('priest_id', db.Integer(), db.ForeignKey('priest.id'))
+    temple_id = db.Column('temple_id', db.Integer(), db.ForeignKey('temple.id'))
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    funerals2 = relationship("Funeral", back_populates="priest_temple")
+
+    
+    priest = relationship("Priest", backref=db.backref("temple_association", cascade="all, delete-orphan"), passive_deletes=True)
+    temple = relationship("Temple", backref=db.backref("priest_association", cascade="all, delete-orphan"), passive_deletes=True)
+
+    def __repr__(self):
+        return f'Kapłan {self.priest_id}, świątynia {self.temple_id}'
 
 class Priest(db.Model):
     # connected with temple m-t-m
@@ -205,7 +212,7 @@ class Priest(db.Model):
     religion = db.Column(db.Text)
     price = db.Column(db.Integer)
 
-    temples = db.relationship('Temple', secondary=priest_temple, backref=db.backref('priests', lazy = 'dynamic'))
+    temples = relationship('Temple', secondary="priest_temple")
 
     def __repr__(self):
         return f'Kapłan {self.first_name}, {self.last_name}'
@@ -224,16 +231,7 @@ class Temple(db.Model):
     capacity = db.Column(db.Integer)
     rank = db.Column(db.Text)
 
+    priests = relationship('Priest', secondary="priest_temple")
+
     def __repr__(self):
         return f'Swiątynia wyznania {self.religion}, umiejscowiona w {self.voivodeship}, {self.county}, {self.locality}'
-#
-#class Priest_Temple(db.Model):
- #   __tablename__ = 'priest_temple'
-  #  priest_id = db.Column(db.Integer, ForeignKey(Priest.id), primary_key=True)
-   # temple_id = db.Column(db.Integer, ForeignKey(Temple.id), primary_key=True)
-#
- #   priest = relationship('Priest', secondary= back_populates='temples', passive_deletes='all')
-  #  temple = relationship('Temple', back_populates='priests', passive_deletes='all')
-#
- #   def __repr__(self):
-  #      return f'Priest_Temple [{self.id}] {priest_id} <<-->> {self.temple}'
