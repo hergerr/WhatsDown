@@ -55,11 +55,16 @@ def statistics():
 
     most_expensive_funeal = Funeral.query.order_by(Funeral.total_price)[-1]
 
+    burieds = Buried.query.all()    # Form F.M: it's on purpose, late i use it in loop and i want do distinguish it
+    counter = Counter([buried.cause_of_death for buried in burieds])
+    most_popular_cause_of_death = counter.most_common(1)[0]
+
     return render_template('statistics.html', most_exclusive_priest=most_exclusive_priest,
                            avg_fun_house_price=avg_fun_house_price, buried_number=buried_number,
                            most_popular_outfit_brand=most_popular_outfit_brand,
                            most_popular_container_type=most_popular_container_type,
-                           most_expensive_funeal=most_expensive_funeal)
+                           most_expensive_funeal=most_expensive_funeal,
+                           most_popular_cause_of_death=most_popular_cause_of_death)
 
 
 @app.route('/logout')
