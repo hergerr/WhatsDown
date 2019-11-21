@@ -1,10 +1,9 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, session
 from whatsdown import app, db
 from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm
 from whatsdown.models import Administrator, User
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_required, login_user, logout_user
-
+from whatsdown.utils import check_logged_in_user
 
 @app.route('/')
 def home_page():
@@ -20,11 +19,14 @@ def login():
         user = User.query.filter_by(login=form.username.data).first()
         if admin:
             if check_password_hash(admin.password, form.password.data):
-                login_user(admin, remember=form.remember.data)
+                session['logged'] = True
+                session['admin'] = True
                 return redirect('/admin')
         elif user:
             if check_password_hash(user.password, form.password.data):
-                login_user(user, remember=form.remember.data)
+                session['logged'] = True
+                session['user'] = True
+                session['username'] = user.name
                 return redirect(url_for('home_page'))
         else:
             return 'Invalid username or password'
@@ -33,9 +35,8 @@ def login():
 
 
 @app.route('/logout')
-@login_required
 def logout():
-    logout_user()
+    session.clear()
     return redirect(url_for('login'))
 
 
@@ -68,7 +69,7 @@ def signup_user():
 
 
 @app.route('/dashboard')
-@login_required
+@check_logged_in_user
 def dashboard():
     return render_template('dashboard.html')
 

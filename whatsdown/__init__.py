@@ -1,17 +1,13 @@
-from flask import Flask, abort
+from flask import Flask, abort, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import flask_admin
 from flask_admin.contrib.sqla import ModelView
 from whatsdown.config import name, db_name, password
 from flask_bootstrap import Bootstrap
-from flask_login import LoginManager, current_user
 
 app = Flask(__name__)
 Bootstrap(app)
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
 
 # db and admin config
 app.secret_key = 'w4lepsze'
@@ -27,16 +23,10 @@ from .models import Administrator, User, Buried, Tombstone, Quarter, Priest, Tem
     Funeral
 
 
-# makes connection between flask login and data in db
-@login_manager.user_loader
-def load_admin(user_id):
-    return Administrator.query.get(int(user_id))
-
-
 class CustomModelView(ModelView):
     def is_accessible(self):
-        if hasattr(current_user, 'is_admin') and current_user.is_admin:
-            return current_user.is_authenticated
+        if 'admin' in session:
+            return True
         else:
             return abort(404)
 
