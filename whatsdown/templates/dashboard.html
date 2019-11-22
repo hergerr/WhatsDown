@@ -1,9 +1,23 @@
-{% extends "bootstrap/base.html" %}
+<h1>Witaj {{ session['username'] }}</h1>
 
-{% block title %}
-Dashboard
-{% endblock %}
+<h2>Dodaj pogrzeb</h2>
+<form action="/dashboard">
+    {{ funeral_form.date.label }}{{ funeral_form.date }}
+    {{ funeral_form.total_price.label }}{{ funeral_form.total_price }}
+    {{ funeral_form.buried.label }}{{ funeral_form.buried }}
+    {{ funeral_form.funeral_home.label }}{{ funeral_form.funeral_home }}
+</form>
 
-{% block content %}
-    dasz bord?
-{% endblock %}
+<h2>Dodaj pochowanego</h2>
+
+<form action="/dashboard">
+    {{ buried_form.quarter.label }} {{ buried_form.quarter }}
+    {{ buried_form.funeral.label }} {{ buried_form.funeral }}
+    {{ buried_form.container.label }} {{ buried_form.container }}
+    {{ buried_form.outfit.label }} {{ buried_form.outfit }}
+    {{ buried_form.first_name.label }} {{ buried_form.first_name }}
+    {{ buried_form.last_name.label }} {{ buried_form.last_name }}
+    {{ buried_form.birth_date.label }} {{ buried_form.birth_date }}
+    {{ buried_form.death_date.label }} {{ buried_form.death_date }}
+    {{ buried_form.cause_of_death.label }} {{ buried_form.cause_of_death }}
+</form>

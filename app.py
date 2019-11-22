@@ -1,9 +1,10 @@
 from flask import render_template, redirect, url_for, session
 from whatsdown import app, db
-from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm
+from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm, AddFuneralForm, AddBuriedForm
 from whatsdown.models import Administrator, User
 from werkzeug.security import generate_password_hash, check_password_hash
 from whatsdown.utils import check_logged_in_user
+
 
 @app.route('/')
 def home_page():
@@ -71,7 +72,9 @@ def signup_user():
 @app.route('/dashboard')
 @check_logged_in_user
 def dashboard():
-    return render_template('dashboard.html')
+    funeral_form = AddFuneralForm()
+    buried_form = AddBuriedForm()
+    return render_template('dashboard.html', funeral_form=funeral_form, buried_form=buried_form)
 
 
 if __name__ == '__main__':
