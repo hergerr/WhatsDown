@@ -13,7 +13,7 @@ class Administrator(db.Model, UserMixin):
     __tablename__ = 'administrator'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     login = db.Column(db.String(30), nullable=False, unique=True)
-    password = db.Column(db.String(30), nullable=False)
+    password = db.Column(db.String(300), nullable=False)
     is_admin = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
@@ -32,7 +32,7 @@ class User(db.Model, UserMixin):
     phone = db.Column(db.Text)
     price = db.Column(db.Integer)
     login = db.Column(db.String(30), nullable=False, unique=True)
-    password = db.Column(db.String(30), nullable=False)
+    password = db.Column(db.String(300), nullable=False)
 
     # bidirectional relationships
     funerals = relationship("Funeral", back_populates="funeral_home")
@@ -186,11 +186,6 @@ class Funeral(db.Model):
     def __repr__(self):
         return f'Pogrzeb nr {self.id}'
 
-#table many-to-many
-priest_temple = db.Table('priest_temple',
-    db.Column('priest_id', db.Integer(), db.ForeignKey('priest.id')),
-    db.Column('temple_id', db.Integer(), db.ForeignKey('temple.id'))
-    )
 
 
 class Priest(db.Model):
@@ -205,7 +200,7 @@ class Priest(db.Model):
     religion = db.Column(db.Text)
     price = db.Column(db.Integer)
 
-    temples = db.relationship('Temple', secondary=priest_temple, backref=db.backref('priests', lazy = 'dynamic'))
+    temples = relationship('Temple', secondary="priest_temple")
 
     def __repr__(self):
         return f'Kapłan {self.first_name}, {self.last_name}'
@@ -224,16 +219,21 @@ class Temple(db.Model):
     capacity = db.Column(db.Integer)
     rank = db.Column(db.Text)
 
+    priests = relationship('Priest', secondary="priest_temple")
+
     def __repr__(self):
         return f'Swiątynia wyznania {self.religion}, umiejscowiona w {self.voivodeship}, {self.county}, {self.locality}'
-#
-#class Priest_Temple(db.Model):
- #   __tablename__ = 'priest_temple'
-  #  priest_id = db.Column(db.Integer, ForeignKey(Priest.id), primary_key=True)
-   # temple_id = db.Column(db.Integer, ForeignKey(Temple.id), primary_key=True)
-#
- #   priest = relationship('Priest', secondary= back_populates='temples', passive_deletes='all')
-  #  temple = relationship('Temple', back_populates='priests', passive_deletes='all')
-#
- #   def __repr__(self):
-  #      return f'Priest_Temple [{self.id}] {priest_id} <<-->> {self.temple}'
+
+class Priest_Temple(db.Model):
+    __tablename__ = 'priest_temple'
+
+
+    priest_id = db.Column('priest_id', db.Integer(), db.ForeignKey('priest.id'), primary_key=True)
+    temple_id = db.Column('temple_id', db.Integer(), db.ForeignKey('temple.id'), primary_key=True)
+
+    
+    priest = relationship("Priest", backref=db.backref("temple_association", cascade="all, delete-orphan"), passive_deletes=True)
+    temple = relationship("Temple", backref=db.backref("priest_association", cascade="all, delete-orphan"), passive_deletes=True)
+
+    def __repr__(self):
+        return f'Kapłan {self.priest_id}, Świątynia {self.temple_id}'

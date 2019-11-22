@@ -24,7 +24,7 @@ Migrate(app, db)
 admin = flask_admin.Admin(app)
 
 from .models import Administrator, User, Buried, Tombstone, Quarter, Priest, Temple, Cemetery, Outfit, Container, \
-    Funeral
+    Funeral, Priest_Temple
 
 
 # makes connection between flask login and data in db
@@ -53,3 +53,4 @@ admin.add_view(CustomModelView(Cemetery, db.session))
 admin.add_view(CustomModelView(Outfit, db.session))
 admin.add_view(CustomModelView(Container, db.session))
 admin.add_view(CustomModelView(Funeral, db.session))
+admin.add_view(CustomModelView(Priest_Temple, db.session))
