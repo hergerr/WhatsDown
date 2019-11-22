@@ -5,10 +5,6 @@ from sqlalchemy import ForeignKey
 from datetime import date, datetime
 
 
-# czy 'data' to to samo co "data"?
-# w szczególności przy oznaczaniu rodziców i dzieci w kluczach obcych ('parent) vs ("parent")
-
-
 class Administrator(db.Model, UserMixin):
     __tablename__ = 'administrator'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
@@ -20,7 +16,7 @@ class Administrator(db.Model, UserMixin):
         return f'Administrator {self.id}, login {self.login}'
 
 
-class User(db.Model, UserMixin):
+class FuneralHome(db.Model, UserMixin):
     # connected with funeral o-t-m
     # atributes
     __tablename__ = 'funeral_home'
@@ -30,12 +26,11 @@ class User(db.Model, UserMixin):
     county = db.Column(db.Text)
     locality = db.Column(db.Text)
     phone = db.Column(db.Text)
-    price = db.Column(db.Integer)
     login = db.Column(db.String(30), nullable=False, unique=True)
     password = db.Column(db.String(300), nullable=False)
 
     # bidirectional relationships
-    funerals = relationship("Funeral", back_populates="funeral_home")
+    funerals = relationship("Funeral", back_populates="funeral_home", cascade="save-update, merge, delete")
 
     def __repr__(self):
         return f'Dom pogrzebowy {self.name}'
@@ -48,9 +43,6 @@ class Tombstone(db.Model):  # connected with quarter o-t-m
     manufacturer = db.Column(db.Text)
     material = db.Column(db.Text)
     price = db.Column(db.Integer)
-
-    # relationships
-    quarter = relationship("Quarter", back_populates="tombstone")
 
     def __repr__(self):
         return f'Nagrobek marki {self.manufacturer}, model {self.material}'
@@ -73,8 +65,8 @@ class Quarter(db.Model):
 
     # relationships
     cemetery = relationship("Cemetery", back_populates="quarters")
-    buried = relationship("Buried", back_populates="quarter", passive_deletes='all')
-    tombstone = relationship("Tombstone", back_populates="quarter")
+    buried = relationship("Buried", back_populates="quarter", cascade="save-update, merge, delete")
+    tombstone = relationship("Tombstone")
 
     def __repr__(self):
         return f'Kwatera na cmentarzu nr {self.cemetery_id}, x={self.x_coord}, y={self.y_coord}'
@@ -92,7 +84,7 @@ class Cemetery(db.Model):
     faith = db.Column(db.Text)
 
     # bidirectional relationships
-    quarters = relationship("Quarter", back_populates="cemetery", passive_deletes='all')
+    quarters = relationship("Quarter", back_populates="cemetery", cascade="save-update, merge, delete")
 
     def __repr__(self):
         return f'Cmentarz w woj. {self.voivodeship}, powiat {self.county}, miejscowość {self.locality}, ulica {self.street}'
@@ -110,9 +102,6 @@ class Outfit(db.Model):
     color = db.Column(db.Text)
     price = db.Column(db.Integer)
 
-    # relationships
-    buried = relationship("Buried", back_populates="outfit")
-
     def __repr__(self):
         return f'{self.type_of_clothing}, marki  {self.brand}, rozmiar {self.size}, w kolorze {self.color}'
 
@@ -129,7 +118,6 @@ class Container(db.Model):
     price = db.Column(db.Integer)
 
     # relationships
-    buried = relationship("Buried", back_populates="container")
 
     def __repr__(self):
         return f'Pojemnik {self.manufacturer}, wykonany z {self.material}'
@@ -150,16 +138,16 @@ class Buried(db.Model):
     cause_of_death = db.Column(db.Text)
 
     # foreign keys
-    outfit_id = db.Column(db.Integer, ForeignKey('outfit.id'), nullable=True)
-    container_id = db.Column(db.Integer, ForeignKey('container.id'), nullable=True)
+    outfit_id = db.Column(db.Integer, ForeignKey('outfit.id'), nullable=False)
+    container_id = db.Column(db.Integer, ForeignKey('container.id'), nullable=False)
     quarter_id = db.Column(db.Integer, ForeignKey('quarter.id'), nullable=False)
     funeral_id = db.Column(db.Integer, ForeignKey('funeral.id'), nullable=False)
 
     # bidirectional relationships
     quarter = relationship("Quarter", back_populates="buried")
     funeral = relationship("Funeral", back_populates="buried")
-    container = relationship("Container", back_populates="buried")
-    outfit = relationship("Outfit", back_populates="buried")
+    container = relationship("Container")
+    outfit = relationship("Outfit")
 
     def __repr__(self):
         return f'Pochowany {self.first_name} {self.last_name}'
@@ -177,11 +165,13 @@ class Funeral(db.Model):
     total_price = db.Column(db.Integer)
 
     # foreign keys
-    funeral_home_id = db.Column(db.Integer, ForeignKey('funeral_home.id'), nullable=True)
+    funeral_home_id = db.Column(db.Integer, ForeignKey('funeral_home.id'), nullable=False)
+    priest_temple_id = db.Column(db.Integer, ForeignKey('priest_temple.id'), nullable=False)
 
     # bidirectional relationships
-    buried = relationship("Buried", back_populates="funeral", passive_deletes='all')
-    funeral_home = relationship("User", back_populates="funerals")
+    buried = relationship("Buried", back_populates="funeral", cascade="save-update, merge, delete")
+    funeral_home = relationship("FuneralHome", back_populates="funerals")
+    priest_temple = relationship("PriestTemple")
 
     def __repr__(self):
         return f'Pogrzeb nr {self.id}'
@@ -224,12 +214,12 @@ class Temple(db.Model):
     def __repr__(self):
         return f'Swiątynia wyznania {self.religion}, umiejscowiona w {self.voivodeship}, {self.county}, {self.locality}'
 
-class Priest_Temple(db.Model):
+class PriestTemple(db.Model):
     __tablename__ = 'priest_temple'
 
-
-    priest_id = db.Column('priest_id', db.Integer(), db.ForeignKey('priest.id'), primary_key=True)
-    temple_id = db.Column('temple_id', db.Integer(), db.ForeignKey('temple.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    priest_id = db.Column('priest_id', db.Integer(), db.ForeignKey('priest.id'))
+    temple_id = db.Column('temple_id', db.Integer(), db.ForeignKey('temple.id'))
 
     
     priest = relationship("Priest", backref=db.backref("temple_association", cascade="all, delete-orphan"), passive_deletes=True)
