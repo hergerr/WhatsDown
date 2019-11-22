@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, session
 from whatsdown import app, db
 from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm, AddFuneralForm, AddBuriedForm
-from whatsdown.models import Administrator, User
+from whatsdown.models import Administrator, User, Buried, Funeral
 from werkzeug.security import generate_password_hash, check_password_hash
 from whatsdown.utils import check_logged_in_user
 
@@ -28,7 +28,7 @@ def login():
                 session['logged'] = True
                 session['user'] = True
                 session['username'] = user.name
-                return redirect(url_for('home_page'))
+                return redirect(url_for('dashboard'))
         else:
             return 'Invalid username or password'
 
@@ -74,7 +74,16 @@ def signup_user():
 def dashboard():
     funeral_form = AddFuneralForm()
     buried_form = AddBuriedForm()
-    return render_template('dashboard.html', funeral_form=funeral_form, buried_form=buried_form)
+    buried = Buried.query.join(Funeral).join(User).filter_by(name=session['username']).all()
+    buried_header = ['quarter', 'funeral', 'container', 'outfit', 'first_name', 'last_name', 'birth_date', 'death_date',
+                     'cause_of_death']
+
+    funerals = Funeral.query.join(Buried).join(User).filter_by(name=session['username']).all()
+    print(dir(funerals[0].buried[0]))
+    funeral_header = ['date', 'total_price', 'buried', 'funeral_house']
+
+    return render_template('dashboard.html', funeral_form=funeral_form, buried_form=buried_form, buried=buried,
+                           buried_header=buried_header, funerals=funerals, funeral_header=funeral_header)
 
 
 if __name__ == '__main__':

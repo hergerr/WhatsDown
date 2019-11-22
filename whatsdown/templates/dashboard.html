@@ -1,4 +1,5 @@
 <h1>Witaj {{ session['username'] }}</h1>
+<a href="{{ url_for('logout') }}">Wyloguj</a>
 
 <h2>Dodaj pogrzeb</h2>
 <form action="/dashboard">
@@ -9,7 +10,6 @@
 </form>
 
 <h2>Dodaj pochowanego</h2>
-
 <form action="/dashboard">
     {{ buried_form.quarter.label }} {{ buried_form.quarter }}
     {{ buried_form.funeral.label }} {{ buried_form.funeral }}
@@ -21,3 +21,47 @@
     {{ buried_form.death_date.label }} {{ buried_form.death_date }}
     {{ buried_form.cause_of_death.label }} {{ buried_form.cause_of_death }}
 </form>
+
+<h2>Pochowani</h2>
+<table>
+  <tr>
+      {% for columnn in buried_header %}
+        <th>{{ columnn }}</th>
+      {% endfor %}
+   </tr>
+  {% for bur in buried %}
+    <tr>
+        <td>{{ bur.quarter }}</td>
+        <td>{{ bur.funeral }}</td>
+        <td>{{ bur.container }}</td>
+        <td>{{ bur.outfit }}</td>
+        <td>{{ bur.first_name }}</td>
+        <td>{{ bur.last_name }}</td>
+        <td>{{ bur.birth_date }}</td>
+        <td>{{ bur.death_date }}</td>
+        <td>{{ bur.cause_of_death }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+<h2>Pogrzeby</h2>
+
+<table>
+  <tr>
+      {% for columnn in funeral_header %}
+        <th>{{ columnn }}</th>
+      {% endfor %}
+   </tr>
+  {% for fun in funerals %}
+    <tr>
+        <td>{{ fun.date }}</td>
+        <td>{{ fun.total_price }}</td>
+        <td>
+            {% for bur in fun.buried%}
+                {{ bur.first_name }} {{ bur.last_name }}
+            {% endfor %}
+        </td>
+        <td>{{ fun.funeral_home.name }}</td>
+    </tr>
+  {% endfor %}
+</table>
