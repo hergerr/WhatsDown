@@ -177,7 +177,6 @@ class Funeral(db.Model):
         return f'Pogrzeb nr {self.id}'
 
 
-
 class Priest(db.Model):
     # connected with temple m-t-m
 
@@ -214,6 +213,7 @@ class Temple(db.Model):
     def __repr__(self):
         return f'Swiątynia wyznania {self.religion}, umiejscowiona w {self.voivodeship}, {self.county}, {self.locality}'
 
+
 class PriestTemple(db.Model):
     __tablename__ = 'priest_temple'
 
@@ -221,9 +221,10 @@ class PriestTemple(db.Model):
     priest_id = db.Column('priest_id', db.Integer(), db.ForeignKey('priest.id'))
     temple_id = db.Column('temple_id', db.Integer(), db.ForeignKey('temple.id'))
 
-    
-    priest = relationship("Priest", backref=db.backref("temple_association", cascade="all, delete-orphan"), passive_deletes=True)
-    temple = relationship("Temple", backref=db.backref("priest_association", cascade="all, delete-orphan"), passive_deletes=True)
+    priest = relationship("Priest", backref=db.backref("temple_association", cascade="all, delete-orphan"),
+                          passive_deletes=True)
+    temple = relationship("Temple", backref=db.backref("priest_association", cascade="all, delete-orphan"),
+                          passive_deletes=True)
 
     def __repr__(self):
         return f'Kapłan {self.priest_id}, Świątynia {self.temple_id}'
