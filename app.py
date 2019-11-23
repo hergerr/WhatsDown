@@ -4,6 +4,9 @@ from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm, Sear
 from whatsdown.models import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, login_user, logout_user
+from flask_whooshee import *
+
+ws = WhoosheeQuery.whooshee_search
 
 
 @app.route('/', methods=['GET'])
@@ -17,6 +20,8 @@ def home_page():
 @app.route('/search', methods=['GET'])
 def search():
     category = str(request.args["category"])
+    phrase = str(request.args["phrase"])
+
     table = Buried
     if category == "buried":
         table = Buried
@@ -40,7 +45,8 @@ def search():
         table = User
 
     column_names = table.__table__.columns.keys()  # get columns names
-    records = table.query.all()  # get table records
+    records = table.query.whooshee_search(phrase).all()  # get table records
+    print(records)
 
     return render_template('search.html', column_names=column_names, records=records)
 

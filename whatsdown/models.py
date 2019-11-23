@@ -1,9 +1,11 @@
 from whatsdown import db
-from flask_login import UserMixin
+from flask import abort
+from flask_login import LoginManager, UserMixin, current_user
 from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey
 from datetime import date, datetime
-
+from whatsdown import admin, login_manager, whooshee
+from flask_admin.contrib.sqla import ModelView
 
 # czy 'data' to to samo co "data"?
 # w szczególności przy oznaczaniu rodziców i dzieci w kluczach obcych ('parent) vs ("parent")
@@ -20,6 +22,7 @@ class Administrator(db.Model, UserMixin):
         return f'Administrator {self.id}, login {self.login}'
 
 
+@whooshee.register_model('name', 'voivodeship', 'county', 'locality', 'phone')
 class User(db.Model, UserMixin):
     # connected with funeral o-t-m
     # atributes
@@ -41,6 +44,7 @@ class User(db.Model, UserMixin):
         return f'Dom pogrzebowy {self.name}'
 
 
+@whooshee.register_model('manufacturer', 'material')
 class Tombstone(db.Model):  # connected with quarter o-t-m
     # atributes
     __tablename__ = 'tombstone'
@@ -80,6 +84,7 @@ class Quarter(db.Model):
         return f'Kwatera na cmentarzu nr {self.cemetery_id}, x={self.x_coord}, y={self.y_coord}'
 
 
+@whooshee.register_model('voivodeship', 'county', 'locality', 'street', 'faith')
 class Cemetery(db.Model):
     # connected with quarter m-t-o
     # atributes
@@ -98,6 +103,7 @@ class Cemetery(db.Model):
         return f'Cmentarz w woj. {self.voivodeship}, powiat {self.county}, miejscowość {self.locality}, ulica {self.street}'
 
 
+@whooshee.register_model('type_of_clothing', 'size', 'brand', 'color')
 class Outfit(db.Model):
     # connected with buried m-t-o
 
@@ -117,6 +123,7 @@ class Outfit(db.Model):
         return f'{self.type_of_clothing}, marki  {self.brand}, rozmiar {self.size}, w kolorze {self.color}'
 
 
+@whooshee.register_model('type_of_container', 'manufacturer', 'material')
 class Container(db.Model):
     # connected with buried m-t-o
 
@@ -135,6 +142,7 @@ class Container(db.Model):
         return f'Pojemnik {self.manufacturer}, wykonany z {self.material}'
 
 
+@whooshee.register_model('first_name', 'last_name', 'cause_of_death')
 class Buried(db.Model):
     # connected with outfit o-t-m
     # connected with container o-t-m
@@ -192,6 +200,7 @@ class Funeral(db.Model):
                              db.Column('temple_id', db.Integer(), db.ForeignKey('temple.id'), primary_key=True))
 
 
+@whooshee.register_model('title', 'first_name', 'last_name', 'religion')
 class Priest(db.Model):
     # connected with temple m-t-m
 
@@ -208,6 +217,7 @@ class Priest(db.Model):
         return f'Kapłan {self.first_name}, {self.last_name}'
 
 
+@whooshee.register_model('voivodeship', 'county', 'locality', 'religion', 'rank')
 class Temple(db.Model):
     # connected with priest m-t-m
 
@@ -223,3 +233,30 @@ class Temple(db.Model):
 
     def __repr__(self):
         return f'Swiątynia wyznania {self.religion}, umiejscowiona w {self.voivodeship}, {self.county}, {self.locality}'
+
+
+# makes connection between flask login and data in db
+@login_manager.user_loader
+def load_admin(user_id):
+    return Administrator.query.get(int(user_id))
+
+
+class CustomModelView(ModelView):
+    def is_accessible(self):
+        if hasattr(current_user, 'is_admin') and current_user.is_admin:
+            return current_user.is_authenticated
+        else:
+            return abort(404)
+
+
+admin.add_view(CustomModelView(Administrator, db.session))
+admin.add_view(CustomModelView(User, db.session))
+admin.add_view(CustomModelView(Buried, db.session))
+admin.add_view(CustomModelView(Tombstone, db.session))
+admin.add_view(CustomModelView(Quarter, db.session))
+admin.add_view(CustomModelView(Priest, db.session))
+admin.add_view(CustomModelView(Temple, db.session))
+admin.add_view(CustomModelView(Cemetery, db.session))
+admin.add_view(CustomModelView(Outfit, db.session))
+admin.add_view(CustomModelView(Container, db.session))
+admin.add_view(CustomModelView(Funeral, db.session))
