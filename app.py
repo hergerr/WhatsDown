@@ -1,6 +1,7 @@
-from flask import render_template, redirect, url_for, session
+from flask import render_template, redirect, url_for, session, request
 from whatsdown import app, db
-from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm, AddFuneralForm, AddBuriedForm
+from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm, AddFuneralForm, AddBuriedForm, \
+    DeleteRecordForm
 from whatsdown.models import Administrator, User, Buried, Funeral
 from werkzeug.security import generate_password_hash, check_password_hash
 from whatsdown.utils import check_logged_in_user
@@ -72,18 +73,50 @@ def signup_user():
 @app.route('/dashboard')
 @check_logged_in_user
 def dashboard():
-    funeral_form = AddFuneralForm()
+    return render_template('dashboard.html')
+
+
+@app.route('/dashboard/buried', methods=['GET', 'POST'])
+@check_logged_in_user
+def user_buried():
+    delete_record_form = DeleteRecordForm()
+
+    if request.method == 'POST':
+        if delete_record_form.validate_on_submit():
+            buried_id = delete_record_form.id.data
+            buried_to_delete = Buried.query.filter_by(id=buried_id).first()
+            db.session.delete(buried_to_delete)
+            db.session.commit()
+
     buried_form = AddBuriedForm()
     buried = Buried.query.join(Funeral).join(User).filter_by(name=session['username']).all()
-    buried_header = ['quarter', 'funeral', 'container', 'outfit', 'first_name', 'last_name', 'birth_date', 'death_date',
-                     'cause_of_death']
+    buried_header = ['id', 'quarter', 'funeral', 'container', 'outfit', 'first_name', 'last_name', 'birth_date',
+                     'death_date', 'cause_of_death']
 
+
+
+    return render_template('user_buried.html', buried_form=buried_form, buried=buried,
+                           buried_header=buried_header, delete_record_form=delete_record_form)
+
+
+@app.route('/dashboard/funerals', methods=['GET', 'POST'])
+@check_logged_in_user
+def user_funerals():
+    funeral_form = AddFuneralForm()
     funerals = Funeral.query.join(Buried).join(User).filter_by(name=session['username']).all()
-    print(dir(funerals[0].buried[0]))
-    funeral_header = ['date', 'total_price', 'buried', 'funeral_house']
+    funeral_header = ['id', 'date', 'total_price', 'buried', 'funeral_house']
 
-    return render_template('dashboard.html', funeral_form=funeral_form, buried_form=buried_form, buried=buried,
-                           buried_header=buried_header, funerals=funerals, funeral_header=funeral_header)
+    delete_record_form = DeleteRecordForm()
+
+    if request.method == 'POST':
+        if delete_record_form.validate_on_submit():
+            funeral_id = delete_record_form.id.data
+            funeral_to_delete = Funeral.query.filter_by(id=funeral_id).first()
+            db.session.delete(funeral_to_delete)
+            db.session.commit()
+
+    return render_template('user_funerals.html', funeral_form=funeral_form, funerals=funerals,
+                           funeral_header=funeral_header, delete_record_form=delete_record_form)
 
 
 if __name__ == '__main__':

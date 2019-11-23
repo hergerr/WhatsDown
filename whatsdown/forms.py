@@ -46,3 +46,7 @@ class AddBuriedForm(FlaskForm):
     birth_date = DateField('birth date')
     death_date = DateField('death date')
     cause_of_death = StringField('cause of death')
+
+
+class DeleteRecordForm(FlaskForm):
+    id = IntegerField('ID', validators=[InputRequired()])
