@@ -13,13 +13,16 @@ from flask_admin.contrib.sqla import ModelView
 
 class Administrator(db.Model, UserMixin):
     __tablename__ = 'administrator'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    id = db.Column('id', db.Integer, primary_key=True, autoincrement=True, nullable=False)
     login = db.Column(db.String(30), nullable=False, unique=True)
     password = db.Column(db.String(30), nullable=False)
     is_admin = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         return f'Administrator {self.id}, login {self.login}'
+
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
 
 @whooshee.register_model('name', 'voivodeship', 'county', 'locality', 'phone')
@@ -43,6 +46,9 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f'Dom pogrzebowy {self.name}'
 
+    def __getitem__(self, field):
+        return self.__dict__[field]
+
 
 @whooshee.register_model('manufacturer', 'material')
 class Tombstone(db.Model):  # connected with quarter o-t-m
@@ -58,6 +64,9 @@ class Tombstone(db.Model):  # connected with quarter o-t-m
 
     def __repr__(self):
         return f'Nagrobek marki {self.manufacturer}, model {self.material}'
+
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
 
 class Quarter(db.Model):
@@ -83,6 +92,9 @@ class Quarter(db.Model):
     def __repr__(self):
         return f'Kwatera na cmentarzu nr {self.cemetery_id}, x={self.x_coord}, y={self.y_coord}'
 
+    def __getitem__(self, field):
+        return self.__dict__[field]
+
 
 @whooshee.register_model('voivodeship', 'county', 'locality', 'street', 'faith')
 class Cemetery(db.Model):
@@ -101,6 +113,9 @@ class Cemetery(db.Model):
 
     def __repr__(self):
         return f'Cmentarz w woj. {self.voivodeship}, powiat {self.county}, miejscowość {self.locality}, ulica {self.street}'
+
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
 
 @whooshee.register_model('type_of_clothing', 'size', 'brand', 'color')
@@ -122,6 +137,9 @@ class Outfit(db.Model):
     def __repr__(self):
         return f'{self.type_of_clothing}, marki  {self.brand}, rozmiar {self.size}, w kolorze {self.color}'
 
+    def __getitem__(self, field):
+        return self.__dict__[field]
+
 
 @whooshee.register_model('type_of_container', 'manufacturer', 'material')
 class Container(db.Model):
@@ -140,6 +158,9 @@ class Container(db.Model):
 
     def __repr__(self):
         return f'Pojemnik {self.manufacturer}, wykonany z {self.material}'
+
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
 
 @whooshee.register_model('first_name', 'last_name', 'cause_of_death')
@@ -172,6 +193,9 @@ class Buried(db.Model):
     def __repr__(self):
         return f'Pochowany {self.first_name} {self.last_name}'
 
+    def __getitem__(self, field):
+        return self.__dict__[field]
+
 
 class Funeral(db.Model):
     # connected with funeral_home o-t-m
@@ -193,6 +217,9 @@ class Funeral(db.Model):
 
     def __repr__(self):
         return f'Pogrzeb nr {self.id}'
+
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
     # table many-to-many
     priest_temple = db.Table('priest_temple',
@@ -216,6 +243,9 @@ class Priest(db.Model):
     def __repr__(self):
         return f'Kapłan {self.first_name}, {self.last_name}'
 
+    def __getitem__(self, field):
+        return self.__dict__[field]
+
 
 @whooshee.register_model('voivodeship', 'county', 'locality', 'religion', 'rank')
 class Temple(db.Model):
@@ -233,6 +263,9 @@ class Temple(db.Model):
 
     def __repr__(self):
         return f'Swiątynia wyznania {self.religion}, umiejscowiona w {self.voivodeship}, {self.county}, {self.locality}'
+
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
 
 # makes connection between flask login and data in db

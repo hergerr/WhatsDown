@@ -46,7 +46,14 @@ def search():
 
     column_names = table.__table__.columns.keys()  # get columns names
     records = table.query.whooshee_search(phrase).all()  # get table records
-    print(records)
+
+    DATA = []
+
+    for record in records:
+        row = {}
+        for column_name in column_names:
+            row[column_name] = record[column_name]
+        DATA.append(row)
 
     return render_template('search.html', column_names=column_names, records=records)
 
