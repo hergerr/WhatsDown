@@ -1,9 +1,11 @@
+import wtforms as wtf
 from flask_wtf import FlaskForm
+from flask import session
 from wtforms import StringField, PasswordField, BooleanField
 from .models import Buried, User, Quarter, Funeral, Container, Outfit
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired
-from wtforms.fields.html5 import DateField, IntegerField
+from wtforms.fields.html5 import IntegerField, DateField
 
 
 class LoginForm(FlaskForm):
@@ -37,16 +39,31 @@ class AddFuneralForm(FlaskForm):
 
 
 class AddBuriedForm(FlaskForm):
-    quarter = QuerySelectField('quarter', query_factory=lambda: Quarter.query.all())
-    funeral = QuerySelectField('funeral', query_factory=lambda: Funeral.query.all())
-    container = QuerySelectField('container', query_factory=lambda: Container.query.all())
-    outfit = QuerySelectField('outfit', query_factory=lambda: Container.query.all())
     first_name = StringField('first name')
     last_name = StringField('last name')
     birth_date = DateField('birth date')
     death_date = DateField('death date')
     cause_of_death = StringField('cause of death')
+    quarter = QuerySelectField('quarter', query_factory=lambda: Quarter.query.all())
+    funeral = QuerySelectField('funeral', query_factory=lambda: Funeral.query.join(User)
+                               .filter_by(name=session['username']).all())
+    container = QuerySelectField('container', query_factory=lambda: Container.query.all())
+    outfit = QuerySelectField('outfit', query_factory=lambda: Outfit.query.all())
 
 
 class DeleteRecordForm(FlaskForm):
     id = IntegerField('ID', validators=[InputRequired()])
+
+
+class EditBuriedForm(FlaskForm):
+    id = IntegerField('ID', validators=[InputRequired()])
+    first_name = StringField('first name')
+    last_name = StringField('last name')
+    birth_date = wtf.DateField('birth date', format='%Y-%m-%d')
+    death_date = wtf.DateField('death date', format='%Y-%m-%d')
+    cause_of_death = StringField('cause of death')
+    quarter = QuerySelectField('quarter', query_factory=lambda: Quarter.query.all())
+    funeral = QuerySelectField('funeral', query_factory=lambda: Funeral.query.join(User)
+                               .filter_by(name=session['username']).all())
+    container = QuerySelectField('container', query_factory=lambda: Container.query.all())
+    outfit = QuerySelectField('outfit', query_factory=lambda: Outfit.query.all())

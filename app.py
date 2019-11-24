@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, session, request
 from whatsdown import app, db
 from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm, AddFuneralForm, AddBuriedForm, \
-    DeleteRecordForm
+    DeleteRecordForm, EditBuriedForm
 from whatsdown.models import Administrator, User, Buried, Funeral
 from werkzeug.security import generate_password_hash, check_password_hash
 from whatsdown.utils import check_logged_in_user
@@ -80,6 +80,8 @@ def dashboard():
 @check_logged_in_user
 def user_buried():
     delete_record_form = DeleteRecordForm()
+    buried_form = AddBuriedForm()
+    edit_buried_form = EditBuriedForm()
 
     if request.method == 'POST':
         if delete_record_form.validate_on_submit():
@@ -88,15 +90,22 @@ def user_buried():
             db.session.delete(buried_to_delete)
             db.session.commit()
 
-    buried_form = AddBuriedForm()
+        if buried_form.validate_on_submit():
+            new_buried = Buried(first_name=buried_form.first_name.data, last_name=buried_form.last_name.data,
+                                birth_date=buried_form.birth_date.data, death_date=buried_form.death_date.data,
+                                cause_of_death=buried_form.cause_of_death.data, outfit_id=buried_form.outfit.data.id,
+                                container_id=buried_form.container.data.id, quarter_id=buried_form.quarter.data.id,
+                                funeral_id=buried_form.funeral.data.id)
+            db.session.add(new_buried)
+            db.session.commit()
+
     buried = Buried.query.join(Funeral).join(User).filter_by(name=session['username']).all()
-    buried_header = ['id', 'quarter', 'funeral', 'container', 'outfit', 'first_name', 'last_name', 'birth_date',
-                     'death_date', 'cause_of_death']
-
-
+    buried_header = ['id', 'first_name', 'last_name', 'birth_date', 'death_date', 'cause_of_death', 'quarter',
+                     'funeral', 'container', 'outfit']
 
     return render_template('user_buried.html', buried_form=buried_form, buried=buried,
-                           buried_header=buried_header, delete_record_form=delete_record_form)
+                           buried_header=buried_header, delete_record_form=delete_record_form,
+                           edit_buried_form=edit_buried_form)
 
 
 @app.route('/dashboard/funerals', methods=['GET', 'POST'])

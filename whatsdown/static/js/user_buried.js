@@ -12,32 +12,34 @@ const UIcontroller = (function () {
         btnCloseDelete: '.btn-close-delete',
 
         inputItemEditID: '.input-edit-id',
-        inputItemEditName: '.input-edit-name',
-        inputItemEditValue: '.input-edit-value',
-        inputItemEditDate: '.input-edit-date',
+        inputItemEditFirstName: '.input-edit-first-name',
+        inputItemEditLastName: '.input-edit-last-name',
+        inputItemEditBirthDate: '.input-edit-birth-date',
+        inputItemEditDeathDate: '.input-edit-death-date',
+        inputItemCauseOfDeathDate: '.input-edit-cause-of-death',
+
         inputItemDeleteID: '.input-delete-id'
     };
 
     return {
         setModalBoxValues: function (event) {
-            let item, itemID, itemName, itemValue, itemDate;
+            let item, itemID, itemFirstName, itemLastName, itemBirthDate, itemDeathDate, itemCauseOfDeath;
 
             item = event.target.parentNode.parentNode;
-            console.log(item);
             itemID = item.id.split('-')[1];
-            console.log(itemID);
-            // itemName = item.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling;
-            // itemValue = itemName.nextSibling.nextSibling;
-            // itemDate = itemValue.nextSibling.nextSibling.nextSibling.nextSibling;
-            // itemName = itemName.textContent;
-            // itenValue = itemValue.textContent.substr(0, 1) == '-' ? itemValue = itemValue.textContent.split('-')[1] : itemValue = itemValue.textContent.split('+')[1];
-            // itemDate = itemDate.textContent;
+            itemFirstName = item.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling;
+            itemLastName = itemFirstName.nextSibling.nextSibling;
+            itemBirthDate = itemLastName.nextSibling.nextSibling;
+            itemDeathDate = itemBirthDate.nextSibling.nextSibling;
+            itemCauseOfDeath = itemDeathDate.nextSibling.nextSibling;
 
             if (event.target.className === "btn btn-edit") {
-                // document.querySelector(DOMstrings.inputItemEditID).value = itemID;
-                // document.querySelector(DOMstrings.inputItemEditName).value = itemName;
-                // document.querySelector(DOMstrings.inputItemEditValue).value = itemValue;
-                // document.querySelector(DOMstrings.inputItemEditDate).value = itemDate;
+                document.querySelector(DOMstrings.inputItemEditID).value = itemID;
+                document.querySelector(DOMstrings.inputItemEditFirstName).value = itemFirstName.textContent;
+                document.querySelector(DOMstrings.inputItemEditLastName).value = itemLastName.textContent;
+                document.querySelector(DOMstrings.inputItemEditBirthDate).value = itemBirthDate.textContent;
+                document.querySelector(DOMstrings.inputItemEditDeathDate).value = itemDeathDate.textContent;
+                document.querySelector(DOMstrings.inputItemCauseOfDeathDate).value = itemCauseOfDeath.textContent;
             }
 
             if (event.target.className === "btn btn-remove") {
