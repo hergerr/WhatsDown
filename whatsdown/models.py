@@ -1,8 +1,10 @@
 from whatsdown import db
 from flask_login import UserMixin
-from sqlalchemy.orm import relationship
-from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship, Session
+from sqlalchemy import ForeignKey, event
 from datetime import date, datetime
+from sqlalchemy.event import listen
+from sqlalchemy.pool import Pool
 
 
 class Administrator(db.Model, UserMixin):
@@ -29,7 +31,7 @@ class FuneralHome(db.Model, UserMixin):
     login = db.Column(db.String(30), nullable=False, unique=True)
     password = db.Column(db.String(300), nullable=False)
 
-    # bidirectional relationships
+    # relationships
     funerals = relationship("Funeral", back_populates="funeral_home", cascade="save-update, merge, delete")
 
     def __repr__(self):
@@ -83,7 +85,7 @@ class Cemetery(db.Model):
     street = db.Column(db.Text)
     faith = db.Column(db.Text)
 
-    # bidirectional relationships
+    # relationships
     quarters = relationship("Quarter", back_populates="cemetery", cascade="save-update, merge, delete")
 
     def __repr__(self):
@@ -117,8 +119,6 @@ class Container(db.Model):
     material = db.Column(db.Text)
     price = db.Column(db.Integer)
 
-    # relationships
-
     def __repr__(self):
         return f'Pojemnik {self.manufacturer}, wykonany z {self.material}'
 
@@ -133,8 +133,8 @@ class Buried(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     first_name = db.Column(db.Text)
     last_name = db.Column(db.Text)
-    birth_date = db.Column(db.DateTime())
-    death_date = db.Column(db.DateTime())
+    birth_date = db.Column(db.Date())
+    death_date = db.Column(db.Date())
     cause_of_death = db.Column(db.Text)
 
     # foreign keys
@@ -143,9 +143,10 @@ class Buried(db.Model):
     quarter_id = db.Column(db.Integer, ForeignKey('quarter.id'), nullable=False)
     funeral_id = db.Column(db.Integer, ForeignKey('funeral.id'), nullable=False)
 
-    # bidirectional relationships
+    # relationships
     quarter = relationship("Quarter", back_populates="buried")
-    funeral = relationship("Funeral", back_populates="buried")
+    funeral = relationship("Funeral", back_populates="buried", single_parent=True, cascade="all, delete-orphan",
+                           passive_deletes=True)
     container = relationship("Container")
     outfit = relationship("Outfit")
 
@@ -161,14 +162,14 @@ class Funeral(db.Model):
     # atributes
     __tablename__ = 'funeral'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    date = db.Column(db.DateTime(), default=datetime.utcnow)
+    date = db.Column(db.Date(), default=datetime.now())
     total_price = db.Column(db.Integer)
 
     # foreign keys
     funeral_home_id = db.Column(db.Integer, ForeignKey('funeral_home.id'), nullable=False)
     priest_temple_id = db.Column(db.Integer, ForeignKey('priest_temple.id'), nullable=False)
 
-    # bidirectional relationships
+    # relationships
     buried = relationship("Buried", back_populates="funeral", cascade="save-update, merge, delete")
     funeral_home = relationship("FuneralHome", back_populates="funerals")
     priest_temple = relationship("PriestTemple")
@@ -189,6 +190,7 @@ class Priest(db.Model):
     religion = db.Column(db.Text)
     price = db.Column(db.Integer)
 
+    # relationship
     temples = relationship('Temple', secondary="priest_temple")
 
     def __repr__(self):
@@ -208,6 +210,7 @@ class Temple(db.Model):
     capacity = db.Column(db.Integer)
     rank = db.Column(db.Text)
 
+    # relationship
     priests = relationship('Priest', secondary="priest_temple")
 
     def __repr__(self):
@@ -221,6 +224,7 @@ class PriestTemple(db.Model):
     priest_id = db.Column('priest_id', db.Integer(), db.ForeignKey('priest.id'))
     temple_id = db.Column('temple_id', db.Integer(), db.ForeignKey('temple.id'))
 
+    # relationship
     priest = relationship("Priest", backref=db.backref("temple_association", cascade="all, delete-orphan"),
                           passive_deletes=True)
     temple = relationship("Temple", backref=db.backref("priest_association", cascade="all, delete-orphan"),
@@ -228,3 +232,14 @@ class PriestTemple(db.Model):
 
     def __repr__(self):
         return f'Kapłan {self.priest_id}, Świątynia {self.temple_id}'
+
+
+@event.listens_for(Buried, 'before_delete')
+def delete_reference(mapper, connection, target):
+    # after_flush used for consistent results
+    @event.listens_for(Session, 'after_flush', once=True)
+    def receive_after_flush(session, context):
+        # just do here everything what you need...
+        # if our preference slide is the last one
+        if target.funeral and not target.funeral.buried:
+            session.delete(target.funeral)

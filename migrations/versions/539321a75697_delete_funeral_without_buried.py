@@ -1,8 +1,8 @@
-"""fixed m2m and other model problems
+"""delete funeral without buried
 
-Revision ID: 207ec95996b0
+Revision ID: 539321a75697
 Revises: 
-Create Date: 2019-11-22 23:46:56.440810
+Create Date: 2019-11-24 19:03:38.751009
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '207ec95996b0'
+revision = '539321a75697'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -112,7 +112,7 @@ def upgrade():
     )
     op.create_table('funeral',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('date', sa.DateTime(), nullable=True),
+    sa.Column('date', sa.Date(), nullable=True),
     sa.Column('total_price', sa.Integer(), nullable=True),
     sa.Column('funeral_home_id', sa.Integer(), nullable=False),
     sa.Column('priest_temple_id', sa.Integer(), nullable=False),
@@ -124,8 +124,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('first_name', sa.Text(), nullable=True),
     sa.Column('last_name', sa.Text(), nullable=True),
-    sa.Column('birth_date', sa.DateTime(), nullable=True),
-    sa.Column('death_date', sa.DateTime(), nullable=True),
+    sa.Column('birth_date', sa.Date(), nullable=True),
+    sa.Column('death_date', sa.Date(), nullable=True),
     sa.Column('cause_of_death', sa.Text(), nullable=True),
     sa.Column('outfit_id', sa.Integer(), nullable=False),
     sa.Column('container_id', sa.Integer(), nullable=False),
