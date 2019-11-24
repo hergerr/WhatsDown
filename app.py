@@ -84,13 +84,30 @@ def user_buried():
     edit_buried_form = EditBuriedForm()
 
     if request.method == 'POST':
-        if delete_record_form.validate_on_submit():
+        if edit_buried_form.validate_on_submit():
+
+            buried_id = edit_buried_form.id.data
+            buried_to_edit = Buried.query.filter_by(id=buried_id).first()
+
+            buried_to_edit.first_name = edit_buried_form.first_name.data
+            buried_to_edit.last_name = edit_buried_form.last_name.data
+            buried_to_edit.birth_date = edit_buried_form.birth_date.data
+            buried_to_edit.death_date = edit_buried_form.death_date.data
+            buried_to_edit.cause_of_death = edit_buried_form.cause_of_death.data
+            buried_to_edit.outfit_id = edit_buried_form.outfit.data.id
+            buried_to_edit.container_id = edit_buried_form.container.data.id
+            buried_to_edit.quarter_id = edit_buried_form.quarter.data.id
+            buried_to_edit.funeral_id = edit_buried_form.funeral.data.id
+
+            db.session.commit()
+
+        elif delete_record_form.validate_on_submit():
             buried_id = delete_record_form.id.data
             buried_to_delete = Buried.query.filter_by(id=buried_id).first()
             db.session.delete(buried_to_delete)
             db.session.commit()
 
-        if buried_form.validate_on_submit():
+        elif buried_form.validate_on_submit():
             new_buried = Buried(first_name=buried_form.first_name.data, last_name=buried_form.last_name.data,
                                 birth_date=buried_form.birth_date.data, death_date=buried_form.death_date.data,
                                 cause_of_death=buried_form.cause_of_death.data, outfit_id=buried_form.outfit.data.id,

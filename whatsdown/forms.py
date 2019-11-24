@@ -1,4 +1,3 @@
-import wtforms as wtf
 from flask_wtf import FlaskForm
 from flask import session
 from wtforms import StringField, PasswordField, BooleanField
@@ -59,8 +58,8 @@ class EditBuriedForm(FlaskForm):
     id = IntegerField('ID', validators=[InputRequired()])
     first_name = StringField('first name')
     last_name = StringField('last name')
-    birth_date = wtf.DateField('birth date', format='%Y-%m-%d')
-    death_date = wtf.DateField('death date', format='%Y-%m-%d')
+    birth_date = DateField('birth date', format='%Y-%m-%d')
+    death_date = DateField('death date', format='%Y-%m-%d')
     cause_of_death = StringField('cause of death')
     quarter = QuerySelectField('quarter', query_factory=lambda: Quarter.query.all())
     funeral = QuerySelectField('funeral', query_factory=lambda: Funeral.query.join(User)

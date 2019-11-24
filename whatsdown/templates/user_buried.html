@@ -5,7 +5,7 @@
     <div class="modal" id="modal-edit">
         <span class="fas fa-times btn-close-modal btn-close-edit">x</span>
         <h3>Edycja rekordu</h3>
-        <form class="form-edit" method="POST" action="{{ url_for('dashboard') }}">
+        <form class="form-edit" method="POST" action="{{ url_for('user_buried') }}">
             {{ edit_buried_form.csrf_token }}
             {{ edit_buried_form.id.label }} {{ edit_buried_form.id(class="input-edit-id") }}
             {{ edit_buried_form.first_name.label }} {{ edit_buried_form.first_name(class="input-edit-first-name") }}
