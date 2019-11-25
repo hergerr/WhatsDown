@@ -1,8 +1,8 @@
-"""delete funeral without buried
+"""added removal funeral without buried and added single-parent fields
 
-Revision ID: 539321a75697
+Revision ID: 7450f0ee122b
 Revises: 
-Create Date: 2019-11-24 19:03:38.751009
+Create Date: 2019-11-25 21:46:26.210292
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '539321a75697'
+revision = '7450f0ee122b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -112,8 +112,8 @@ def upgrade():
     )
     op.create_table('funeral',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('date', sa.Date(), nullable=True),
-    sa.Column('total_price', sa.Integer(), nullable=True),
+    sa.Column('date', sa.Date(), nullable=False),
+    sa.Column('total_price', sa.Integer(), nullable=False),
     sa.Column('funeral_home_id', sa.Integer(), nullable=False),
     sa.Column('priest_temple_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['funeral_home_id'], ['funeral_home.id'], ),
@@ -121,9 +121,9 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('buried',
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('first_name', sa.Text(), nullable=True),
-    sa.Column('last_name', sa.Text(), nullable=True),
+    sa.Column('PESEL', sa.Integer(), nullable=False),
+    sa.Column('first_name', sa.Text(), nullable=False),
+    sa.Column('last_name', sa.Text(), nullable=False),
     sa.Column('birth_date', sa.Date(), nullable=True),
     sa.Column('death_date', sa.Date(), nullable=True),
     sa.Column('cause_of_death', sa.Text(), nullable=True),
@@ -135,7 +135,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['funeral_id'], ['funeral.id'], ),
     sa.ForeignKeyConstraint(['outfit_id'], ['outfit.id'], ),
     sa.ForeignKeyConstraint(['quarter_id'], ['quarter.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('PESEL')
     )
     # ### end Alembic commands ###
 

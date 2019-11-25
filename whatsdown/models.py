@@ -66,7 +66,7 @@ class Quarter(db.Model):
     tombstone_id = db.Column(db.Integer, db.ForeignKey('tombstone.id'), nullable=True)
 
     # relationships
-    cemetery = relationship("Cemetery", back_populates="quarters")
+    cemetery = relationship("Cemetery", back_populates="quarters",  single_parent=True)
     buried = relationship("Buried", back_populates="quarter", cascade="save-update, merge, delete")
     tombstone = relationship("Tombstone")
 
@@ -130,9 +130,9 @@ class Buried(db.Model):
 
     # atributes
     __tablename__ = 'buried'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    first_name = db.Column(db.Text)
-    last_name = db.Column(db.Text)
+    PESEL = db.Column(db.Integer, primary_key=True, nullable=False)
+    first_name = db.Column(db.Text, nullable=False)
+    last_name = db.Column(db.Text, nullable=False)
     birth_date = db.Column(db.Date())
     death_date = db.Column(db.Date())
     cause_of_death = db.Column(db.Text)
@@ -144,7 +144,7 @@ class Buried(db.Model):
     funeral_id = db.Column(db.Integer, ForeignKey('funeral.id'), nullable=False)
 
     # relationships
-    quarter = relationship("Quarter", back_populates="buried")
+    quarter = relationship("Quarter", back_populates="buried", single_parent=True)
     funeral = relationship("Funeral", back_populates="buried", single_parent=True, cascade="all, delete-orphan",
                            passive_deletes=True)
     container = relationship("Container")
@@ -162,8 +162,8 @@ class Funeral(db.Model):
     # atributes
     __tablename__ = 'funeral'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    date = db.Column(db.Date(), default=datetime.now())
-    total_price = db.Column(db.Integer)
+    date = db.Column(db.Date(), default=datetime.now(), nullable=False)
+    total_price = db.Column(db.Integer, nullable=False)
 
     # foreign keys
     funeral_home_id = db.Column(db.Integer, ForeignKey('funeral_home.id'), nullable=False)
@@ -171,8 +171,8 @@ class Funeral(db.Model):
 
     # relationships
     buried = relationship("Buried", back_populates="funeral", cascade="save-update, merge, delete")
-    funeral_home = relationship("FuneralHome", back_populates="funerals")
-    priest_temple = relationship("PriestTemple")
+    funeral_home = relationship("FuneralHome", back_populates="funerals", single_parent=True)
+    priest_temple = relationship("PriestTemple", single_parent=True)
 
     def __repr__(self):
         return f'Pogrzeb nr {self.id}'
@@ -234,12 +234,12 @@ class PriestTemple(db.Model):
         return f'Kapłan {self.priest_id}, Świątynia {self.temple_id}'
 
 
+# usuwanie pogrzebu bez pochowanych
 @event.listens_for(Buried, 'before_delete')
 def delete_reference(mapper, connection, target):
     # after_flush used for consistent results
     @event.listens_for(Session, 'after_flush', once=True)
     def receive_after_flush(session, context):
-        # just do here everything what you need...
-        # if our preference slide is the last one
+        # if this buried was last in funeral
         if target.funeral and not target.funeral.buried:
             session.delete(target.funeral)
