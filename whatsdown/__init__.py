@@ -23,8 +23,8 @@ db = SQLAlchemy(app)
 Migrate(app, db)
 admin = flask_admin.Admin(app)
 
-from .models import Administrator, User, Buried, Tombstone, Quarter, Priest, Temple, Cemetery, Outfit, Container, \
-    Funeral, Priest_Temple
+from .models import Administrator, FuneralHome, Buried, Tombstone, Quarter, Priest, Temple, Cemetery, Outfit, Container, \
+    Funeral, PriestTemple
 
 
 # makes connection between flask login and data in db
@@ -43,7 +43,7 @@ class CustomModelView(ModelView):
 
 # here models are registered to admin
 admin.add_view(CustomModelView(Administrator, db.session))
-admin.add_view(CustomModelView(User, db.session))
+admin.add_view(CustomModelView(FuneralHome, db.session))
 admin.add_view(CustomModelView(Buried, db.session))
 admin.add_view(CustomModelView(Tombstone, db.session))
 admin.add_view(CustomModelView(Quarter, db.session))
@@ -53,4 +53,4 @@ admin.add_view(CustomModelView(Cemetery, db.session))
 admin.add_view(CustomModelView(Outfit, db.session))
 admin.add_view(CustomModelView(Container, db.session))
 admin.add_view(CustomModelView(Funeral, db.session))
-admin.add_view(CustomModelView(Priest_Temple, db.session))
+admin.add_view(CustomModelView(PriestTemple, db.session))
