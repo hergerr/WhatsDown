@@ -1,8 +1,8 @@
-"""Squashed all migrations
+"""squashed all migrations
 
-Revision ID: 259dbd01ba50
+Revision ID: 8fd5af156187
 Revises: 
-Create Date: 2019-11-27 19:58:36.887691
+Create Date: 2019-11-27 22:09:08.116534
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '259dbd01ba50'
+revision = '8fd5af156187'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -121,7 +121,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('buried',
-    sa.Column('PESEL', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('first_name', sa.Text(), nullable=False),
     sa.Column('last_name', sa.Text(), nullable=False),
     sa.Column('birth_date', sa.Date(), nullable=True),
@@ -135,7 +135,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['funeral_id'], ['funeral.id'], ),
     sa.ForeignKeyConstraint(['outfit_id'], ['outfit.id'], ),
     sa.ForeignKeyConstraint(['quarter_id'], ['quarter.id'], ),
-    sa.PrimaryKeyConstraint('PESEL')
+    sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
 

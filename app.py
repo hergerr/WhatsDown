@@ -165,7 +165,9 @@ def user_buried():
 @check_logged_in_user
 def user_funerals():
     funeral_form = AddFuneralForm()
-    funerals = Funeral.query.join(Buried).join(FuneralHome).filter_by(name=session['username']).all()
+    funerals = Funeral.query.join(FuneralHome).filter(FuneralHome.name == session['username']).all()
+    print(session['username'])
+    print(funerals)
     funeral_header = ['id', 'date', 'total_price', 'buried', 'funeral_house']
 
     delete_record_form = DeleteRecordForm()
