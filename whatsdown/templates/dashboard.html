@@ -1,9 +1,3 @@
-{% extends "bootstrap/base.html" %}
+{% include 'includes/_user_dashboard_header.html' %}
 
-{% block title %}
-Dashboard
-{% endblock %}
-
-{% block content %}
-    dasz bord?
-{% endblock %}
+<h1>Witaj {{ session['username'] }}, życzymy Ci miłego dnia!</h1>

@@ -1,0 +1,79 @@
+{% include 'includes/_user_dashboard_header.html' %}
+
+
+<div class="modal-container">
+    <div class="modal" id="modal-edit">
+        <span class="fas fa-times btn-close-modal btn-close-edit">x</span>
+        <h3>Edycja rekordu</h3>
+        <form class="form-edit" method="POST" action="{{ url_for('user_buried') }}">
+            {{ edit_buried_form.csrf_token }}
+            {{ edit_buried_form.id.label }} {{ edit_buried_form.id(class="input-edit-id") }}
+            {{ edit_buried_form.first_name.label }} {{ edit_buried_form.first_name(class="input-edit-first-name") }}
+            {{ edit_buried_form.last_name.label }} {{ edit_buried_form.last_name(class="input-edit-last-name") }}
+            {{ edit_buried_form.birth_date.label }} {{ edit_buried_form.birth_date(class="input-edit-birth-date") }}
+            {{ edit_buried_form.death_date.label }} {{ edit_buried_form.death_date(class="input-edit-death-date") }}
+            {{ edit_buried_form.cause_of_death.label }} {{ edit_buried_form.cause_of_death(class="input-edit-cause-of-death") }}<br>
+            {{ edit_buried_form.quarter.label }} {{ edit_buried_form.quarter }}<br>
+            {{ edit_buried_form.funeral.label }} {{ edit_buried_form.funeral }}<br>
+            {{ edit_buried_form.container.label }} {{ edit_buried_form.container }}<br>
+            {{ edit_buried_form.outfit.label }} {{ edit_buried_form.outfit }}
+            <button type="submit" class="btn btn-add btn-modal-item btn-edit-item">Edytuj</button>
+        </form>
+    </div>
+
+    <div class="modal" id="modal-delete">
+        <span class="fas fa-times btn-close-modal btn-close-delete">x</span>
+        <h3>Usuwanie rekordu</h3>
+        <form method="POST" action="{{ url_for('user_buried') }}">
+            {{ delete_record_form.csrf_token }}
+            {{ delete_record_form.id.label }} {{ delete_record_form.id(class_="input-delete-id") }}
+            <button type="submit" class="btn btn-add btn-modal-item btn-delete-item">Usuń</button>
+        </form>
+    </div>
+</div>
+
+
+<h2>Dodaj pochowanego</h2>
+<form action="{{url_for('user_buried')}}" method="POST">
+    {{ buried_form.csrf_token }}
+    {{ buried_form.first_name.label }} {{ buried_form.first_name }}
+    {{ buried_form.last_name.label }} {{ buried_form.last_name }}
+    {{ buried_form.birth_date.label }} {{ buried_form.birth_date }}
+    {{ buried_form.death_date.label }} {{ buried_form.death_date }}
+    {{ buried_form.cause_of_death.label }} {{ buried_form.cause_of_death }}
+    {{ buried_form.quarter.label }} {{ buried_form.quarter }}
+    {{ buried_form.funeral.label }} {{ buried_form.funeral }}
+    {{ buried_form.container.label }} {{ buried_form.container }}
+    {{ buried_form.outfit.label }} {{ buried_form.outfit }}
+
+    <button type="submit">Dodaj</button>
+</form>
+
+<div id="buried-table">
+<h2>Pochowani</h2>
+<table>
+  <tr>
+      {% for columnn in buried_header %}
+        <th>{{ columnn }}</th>
+      {% endfor %}
+   </tr>
+  {% for bur in buried %}
+      <tr id="item-{{ bur.id }}">
+        <td><img class="btn btn-remove" src="../static/img/icon-remove.svg" alt="Remove"></td>
+        <td>{{ bur.id }}</td>
+        <td>{{ bur.first_name }}</td>
+        <td>{{ bur.last_name }}</td>
+        <td>{{ bur.birth_date }}</td>
+        <td>{{ bur.death_date }}</td>
+        <td>{{ bur.cause_of_death }}</td>
+        <td>{{ bur.quarter }}</td>
+        <td>{{ bur.funeral }}</td>
+        <td>{{ bur.container }}</td>
+        <td>{{ bur.outfit }}</td>
+        <td><img class="btn btn-edit" src="../static/img/icon-edit.svg" alt="Edit"></td>
+    </tr>
+  {% endfor %}
+</table>
+</div>
+
+<script src="../static/js/user_buried.js"></script>
