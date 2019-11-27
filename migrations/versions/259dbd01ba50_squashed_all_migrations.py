@@ -1,8 +1,8 @@
-"""added removal funeral without buried and added single-parent fields
+"""Squashed all migrations
 
-Revision ID: 7450f0ee122b
+Revision ID: 259dbd01ba50
 Revises: 
-Create Date: 2019-11-25 21:46:26.210292
+Create Date: 2019-11-27 19:58:36.887691
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7450f0ee122b'
+revision = '259dbd01ba50'
 down_revision = None
 branch_labels = None
 depends_on = None
