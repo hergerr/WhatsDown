@@ -1,7 +1,8 @@
 from flask import render_template, redirect, url_for
 from whatsdown import app, db
+from collections import Counter
 from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm
-from whatsdown.models import Administrator, FuneralHome
+from whatsdown.models import Administrator, FuneralHome, Priest, Buried, Outfit, Container, Funeral
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, login_user, logout_user
 
@@ -30,6 +31,40 @@ def login():
             return 'Invalid username or password'
 
     return render_template('login.html', form=form)
+
+
+@app.route('/statistics')
+def statistics():
+    most_exclusive_priest = Priest.query.order_by(Priest.price)[-1]
+
+    funeral_houses = FuneralHome.query.all()
+    sum_price = 0
+    for funeral_house in funeral_houses:
+        sum_price += funeral_house.price
+    avg_fun_house_price = sum_price / len(funeral_houses)
+
+    buried_number = len(Buried.query.all())
+
+    outfits = Outfit.query.all()
+    counter = Counter([brand.brand for brand in outfits])
+    most_popular_outfit_brand = counter.most_common(1)[0]
+
+    containers = Container.query.all()
+    counter = Counter([container.type_of_container for container in containers])
+    most_popular_container_type = counter.most_common(1)[0]
+
+    most_expensive_funeal = Funeral.query.order_by(Funeral.total_price)[-1]
+
+    burieds = Buried.query.all()    # Form F.M: it's on purpose, late i use it in loop and i want do distinguish it
+    counter = Counter([buried.cause_of_death for buried in burieds])
+    most_popular_cause_of_death = counter.most_common(1)[0]
+
+    return render_template('statistics.html', most_exclusive_priest=most_exclusive_priest,
+                           avg_fun_house_price=avg_fun_house_price, buried_number=buried_number,
+                           most_popular_outfit_brand=most_popular_outfit_brand,
+                           most_popular_container_type=most_popular_container_type,
+                           most_expensive_funeal=most_expensive_funeal,
+                           most_popular_cause_of_death=most_popular_cause_of_death)
 
 
 @app.route('/logout')

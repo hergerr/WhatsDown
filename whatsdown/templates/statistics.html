@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Statystyki</title>
+</head>
+<body>
+<h1>Statystyki WhatsDown</h1>
+<h2>Najdroższy kapłan: {{ most_exclusive_priest }} - {{ most_exclusive_priest.price }}PLN</h2>
+<h2>Średni koszt zakładu pogrzebowego: {{ avg_fun_house_price }}PLN</h2>
+<h2>Ilość pochowanych w WhatsDown: {{ buried_number }}</h2>
+<h2>Najpopularniejsza marka odzieży: {{ most_popular_outfit_brand[0] }} ({{ most_popular_outfit_brand[1] }} sztuki)</h2>
+<h2>Najpopularniejszy typ pojemnika: {{ most_popular_container_type[0] }} ({{ most_popular_container_type[1] }} sztuki)</h2>
+<h2>Najdroższy pogrzeb: {{ most_expensive_funeal.total_price }}PLN, należy do {{ most_expensive_funeal.buried}}</h2>
+<h2>Napopularniejszy rodzaj śmierci: {{ most_popular_cause_of_death[0] }}, pochłonął
+    {{ most_popular_cause_of_death[1] }} istnienia</h2>
+</body>
+</html>
