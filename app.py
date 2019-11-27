@@ -59,7 +59,7 @@ def statistics():
 
     most_expensive_funeal = Funeral.query.order_by(Funeral.total_price)[-1]
 
-    burieds = Buried.query.all()    # Form F.M: it's on purpose, late i use it in loop and i want do distinguish it
+    burieds = Buried.query.all()  # Form F.M: it's on purpose, late i use it in loop and i want do distinguish it
     counter = Counter([buried.cause_of_death for buried in burieds])
     most_popular_cause_of_death = counter.most_common(1)[0]
 
@@ -95,9 +95,10 @@ def signup_user():
     form = RegisterUserForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
+        print(form.phone.data)
         new_user = FuneralHome(login=form.username.data, password=hashed_password, name=form.name.data,
-                        voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
-                        phone=form.phone.data, price=form.price.data)
+                               voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
+                               phone=form.phone.data)
         db.session.add(new_user)
         db.session.commit()
         return 'New funeral agency created'
@@ -151,7 +152,7 @@ def user_buried():
             db.session.add(new_buried)
             db.session.commit()
 
-    buried = Buried.query.join(Funeral).join(User).filter_by(name=session['username']).all()
+    buried = Buried.query.join(Funeral).join(FuneralHome).filter_by(name=session['username']).all()
     buried_header = ['id', 'first_name', 'last_name', 'birth_date', 'death_date', 'cause_of_death', 'quarter',
                      'funeral', 'container', 'outfit']
 
@@ -164,7 +165,7 @@ def user_buried():
 @check_logged_in_user
 def user_funerals():
     funeral_form = AddFuneralForm()
-    funerals = Funeral.query.join(Buried).join(User).filter_by(name=session['username']).all()
+    funerals = Funeral.query.join(Buried).join(FuneralHome).filter_by(name=session['username']).all()
     funeral_header = ['id', 'date', 'total_price', 'buried', 'funeral_house']
 
     delete_record_form = DeleteRecordForm()
