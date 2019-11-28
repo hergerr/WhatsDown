@@ -165,11 +165,6 @@ def user_buried():
 @check_logged_in_user
 def user_funerals():
     funeral_form = AddFuneralForm()
-    funerals = Funeral.query.join(FuneralHome).filter(FuneralHome.name == session['username']).all()
-    print(session['username'])
-    print(funerals)
-    funeral_header = ['id', 'date', 'total_price', 'buried', 'funeral_house']
-
     delete_record_form = DeleteRecordForm()
 
     if request.method == 'POST':
@@ -178,6 +173,21 @@ def user_funerals():
             funeral_to_delete = Funeral.query.filter_by(id=funeral_id).first()
             db.session.delete(funeral_to_delete)
             db.session.commit()
+
+        if funeral_form.validate_on_submit():
+            if not funeral_form.buried.data:
+                funeral_form.buried.data = []
+
+            new_funeral = Funeral(date=funeral_form.date.data, total_price=funeral_form.total_price.data,
+                                  buried=funeral_form.buried.data, funeral_home_id=funeral_form.funeral_home.data.id,
+                                  priest_temple_id=funeral_form.priest_temple.data.id)
+            db.session.add(new_funeral)
+            db.session.commit()
+        else:
+            print('Form not valid')
+
+    funerals = Funeral.query.join(FuneralHome).filter(FuneralHome.name == session['username']).all()
+    funeral_header = ['id', 'date', 'total_price', 'buried', 'funeral_house']
 
     return render_template('user_funerals.html', funeral_form=funeral_form, funerals=funerals,
                            funeral_header=funeral_header, delete_record_form=delete_record_form)

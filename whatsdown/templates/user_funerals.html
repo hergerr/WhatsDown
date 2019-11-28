@@ -20,9 +20,8 @@
         <span class="fas fa-times btn-close-modal btn-close-delete">x</span>
         <h3>Usuwanie rekordu</h3>
         <form method="POST" action="{{ url_for('user_funerals') }}">
-            {{ delete_record_form.id.label }} {{ delete_record_form.id(class_="input-delete-id") }}
             {{ delete_record_form.csrf_token }}
-            {#            <p>ID:</p><input class="input-delete-id" name="id" type="text">#}
+            {{ delete_record_form.id.label }} {{ delete_record_form.id(class_="input-delete-id") }}
             <button type="submit" class="btn btn-add btn-modal-item btn-delete-item">Usuń</button>
         </form>
     </div>
@@ -30,11 +29,14 @@
 
 
 <h2>Dodaj pogrzeb</h2>
-<form action="/dashboard">
+<form action="{{ url_for('user_funerals') }}" method="POST">
+    {{ funeral_form.hidden_tag() }}
     {{ funeral_form.date.label }}{{ funeral_form.date }}
     {{ funeral_form.total_price.label }}{{ funeral_form.total_price }}
     {{ funeral_form.buried.label }}{{ funeral_form.buried }}
     {{ funeral_form.funeral_home.label }}{{ funeral_form.funeral_home }}
+    {{ funeral_form.priest_temple.label }}{{ funeral_form.priest_temple }}
+    <button type="submit" class="btn">Dodaj</button>
 </form>
 
 <div id="funerals-table">

@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask import session
 from wtforms import StringField, PasswordField, BooleanField
-from .models import Buried, FuneralHome, Quarter, Funeral, Container, Outfit
+from .models import Buried, FuneralHome, Quarter, Funeral, Container, Outfit, PriestTemple
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired
 from wtforms.fields.html5 import IntegerField, DateField
@@ -32,8 +32,9 @@ class RegisterUserForm(FlaskForm):
 class AddFuneralForm(FlaskForm):
     date = DateField('date')
     total_price = IntegerField('total price')
-    buried = QuerySelectField('buried', query_factory=lambda: Buried.query.all())
+    buried = QuerySelectField('buried', query_factory=lambda: Buried.query.all(), allow_blank=True)
     funeral_home = QuerySelectField('funeral house', query_factory=lambda: FuneralHome.query.all())
+    priest_temple = QuerySelectField('priest and temple', query_factory=lambda: PriestTemple.query.all())
 
 
 class AddBuriedForm(FlaskForm):
