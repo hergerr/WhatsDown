@@ -8,9 +8,9 @@
         <h3>Edycja rekordu</h3>
         <form class="form-edit" method="POST" action="{{ url_for('user_funerals') }}">
             {{ edit_funeral_form.csrf_token }}
-            {{ edit_funeral_form.id.label }} {{ edit_funeral_form.id }}
-            {{ edit_funeral_form.date.label }} {{ edit_funeral_form.date }}
-            {{ edit_funeral_form.total_price.label }} {{ edit_funeral_form.total_price }}
+            {{ edit_funeral_form.id.label }} {{ edit_funeral_form.id(class="input-edit-id") }}
+            {{ edit_funeral_form.date.label }} {{ edit_funeral_form.date(class="input-edit-date") }}
+            {{ edit_funeral_form.total_price.label }} {{ edit_funeral_form.total_price(class="input-edit-total_price") }}
             {{ edit_funeral_form.buried.label }} {{ edit_funeral_form.buried }}
             {{ edit_funeral_form.priest_temple.label }} {{ edit_funeral_form.priest_temple }}
             <button type="submit" class="btn btn-add btn-modal-item btn-edit-item">Edytuj</button>

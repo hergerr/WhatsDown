@@ -12,32 +12,25 @@ const UIcontroller = (function () {
         btnCloseDelete: '.btn-close-delete',
 
         inputItemEditID: '.input-edit-id',
-        inputItemEditName: '.input-edit-name',
-        inputItemEditValue: '.input-edit-value',
         inputItemEditDate: '.input-edit-date',
+        inputItemEditTotalPrice: '.input-edit-total_price',
+
         inputItemDeleteID: '.input-delete-id'
     };
 
     return {
         setModalBoxValues: function (event) {
-            let item, itemID, itemName, itemValue, itemDate;
+            let item, itemID, itemDate, itemTotalPrice;
 
             item = event.target.parentNode.parentNode;
-            console.log(item);
             itemID = item.id.split('-')[1];
-            console.log(itemID);
-            // itemName = item.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling;
-            // itemValue = itemName.nextSibling.nextSibling;
-            // itemDate = itemValue.nextSibling.nextSibling.nextSibling.nextSibling;
-            // itemName = itemName.textContent;
-            // itenValue = itemValue.textContent.substr(0, 1) == '-' ? itemValue = itemValue.textContent.split('-')[1] : itemValue = itemValue.textContent.split('+')[1];
-            // itemDate = itemDate.textContent;
+            itemDate = item.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling;
+            itemTotalPrice = itemDate.nextSibling.nextSibling;
 
             if (event.target.className === "btn btn-edit") {
-                // document.querySelector(DOMstrings.inputItemEditID).value = itemID;
-                // document.querySelector(DOMstrings.inputItemEditName).value = itemName;
-                // document.querySelector(DOMstrings.inputItemEditValue).value = itemValue;
-                // document.querySelector(DOMstrings.inputItemEditDate).value = itemDate;
+                document.querySelector(DOMstrings.inputItemEditID).value = itemID;
+                document.querySelector(DOMstrings.inputItemEditDate).value = itemDate.textContent;
+                document.querySelector(DOMstrings.inputItemEditTotalPrice).value = itemTotalPrice.textContent;
             }
 
             if (event.target.className === "btn btn-remove") {

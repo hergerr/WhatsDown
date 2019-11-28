@@ -171,13 +171,16 @@ def user_funerals():
     if request.method == 'POST':
         if edit_funeral_form.validate_on_submit():
             funeral_id = edit_funeral_form.id.data
-            funeral_to_edit = Buried.query.filter_by(id=funeral_id).first()
+            funeral_to_edit = Funeral.query.filter_by(id=funeral_id).first()
+            print(funeral_to_edit)
 
-            #TODO dodac sprawdzenie czy w bazie jest takie id
+            # TODO dodac sprawdzenie czy w bazie jest takie id
             funeral_to_edit.date = edit_funeral_form.date.data
             funeral_to_edit.total_price = edit_funeral_form.total_price.data
-            funeral_to_edit.buried = edit_funeral_form.buried.data
+            funeral_to_edit.buried = [edit_funeral_form.buried.data]
             funeral_to_edit.priest_temple_id = edit_funeral_form.priest_temple.data.id
+
+            db.session.commit()
 
         elif delete_record_form.validate_on_submit():
             funeral_id = delete_record_form.id.data
