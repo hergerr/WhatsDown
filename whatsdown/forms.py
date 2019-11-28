@@ -33,7 +33,6 @@ class AddFuneralForm(FlaskForm):
     date = DateField('date')
     total_price = IntegerField('total price')
     buried = QuerySelectField('buried', query_factory=lambda: Buried.query.all(), allow_blank=True)
-    funeral_home = QuerySelectField('funeral house', query_factory=lambda: FuneralHome.query.all())
     priest_temple = QuerySelectField('priest and temple', query_factory=lambda: PriestTemple.query.all())
 
 
@@ -54,6 +53,7 @@ class DeleteRecordForm(FlaskForm):
     id = IntegerField('ID', validators=[InputRequired()])
 
 
+# TODO ponizsze klasy moga dziedziczyc po formach do dodania
 class EditBuriedForm(FlaskForm):
     id = IntegerField('ID', validators=[InputRequired()])
     first_name = StringField('first name')
@@ -66,3 +66,11 @@ class EditBuriedForm(FlaskForm):
                                .filter_by(name=session['username']).all())
     container = QuerySelectField('container', query_factory=lambda: Container.query.all())
     outfit = QuerySelectField('outfit', query_factory=lambda: Outfit.query.all())
+
+
+class EditFuneralForm(FlaskForm):
+    id = IntegerField('ID', validators=[InputRequired()])
+    date = DateField('date')
+    total_price = IntegerField('total price')
+    buried = QuerySelectField('buried', query_factory=lambda: Buried.query.all(), allow_blank=True)
+    priest_temple = QuerySelectField('priest and temple', query_factory=lambda: PriestTemple.query.all())
