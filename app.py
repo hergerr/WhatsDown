@@ -172,13 +172,16 @@ def user_funerals():
         if edit_funeral_form.validate_on_submit():
             funeral_id = edit_funeral_form.id.data
             funeral_to_edit = Funeral.query.filter_by(id=funeral_id).first()
-            print(funeral_to_edit)
+
+            if not edit_funeral_form.buried.data:
+                edit_funeral_form.buried.data = ['']
+
 
             # TODO dodac sprawdzenie czy w bazie jest takie id
             funeral_to_edit.date = edit_funeral_form.date.data
             funeral_to_edit.total_price = edit_funeral_form.total_price.data
             funeral_to_edit.buried = [edit_funeral_form.buried.data]
-            funeral_to_edit.priest_temple_id = edit_funeral_form.priest_temple.data.id
+            funeral_to_edit.priest_temple = edit_funeral_form.priest_temple.data
 
             db.session.commit()
 
@@ -195,7 +198,7 @@ def user_funerals():
             new_funeral = Funeral(date=funeral_form.date.data, total_price=funeral_form.total_price.data,
                                   buried=funeral_form.buried.data,
                                   funeral_home_id=FuneralHome.query.filter_by(name=session['username']).first().id,
-                                  priest_temple_id=funeral_form.priest_temple.data.id)
+                                  priest_temple=funeral_form.priest_temple.data)
             db.session.add(new_funeral)
             db.session.commit()
 
