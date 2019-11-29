@@ -81,11 +81,12 @@ def logout():
 def signup_admin():
     form = RegisterAdminForm()
     if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_admin = Administrator(login=form.username.data, password=hashed_password)
-        db.session.add(new_admin)
-        db.session.commit()
-        return 'New admin created'
+        if form.special_key.data == 'admin':
+            hashed_password = generate_password_hash(form.password.data, method='sha256')
+            new_admin = Administrator(login=form.username.data, password=hashed_password)
+            db.session.add(new_admin)
+            db.session.commit()
+            return 'New admin created'
 
     return render_template('signup-admin.html', form=form)
 
@@ -173,14 +174,9 @@ def user_funerals():
             funeral_id = edit_funeral_form.id.data
             funeral_to_edit = Funeral.query.filter_by(id=funeral_id).first()
 
-            if not edit_funeral_form.buried.data:
-                edit_funeral_form.buried.data = ['']
-
-
             # TODO dodac sprawdzenie czy w bazie jest takie id
             funeral_to_edit.date = edit_funeral_form.date.data
-            funeral_to_edit.total_price = edit_funeral_form.total_price.data
-            funeral_to_edit.buried = [edit_funeral_form.buried.data]
+            # funeral_to_edit.total_price = edit_funeral_form.total_price.data
             funeral_to_edit.priest_temple = edit_funeral_form.priest_temple.data
 
             db.session.commit()
@@ -192,11 +188,7 @@ def user_funerals():
             db.session.commit()
 
         elif funeral_form.validate_on_submit():
-            if not funeral_form.buried.data:
-                funeral_form.buried.data = []
-
             new_funeral = Funeral(date=funeral_form.date.data, total_price=funeral_form.total_price.data,
-                                  buried=funeral_form.buried.data,
                                   funeral_home_id=FuneralHome.query.filter_by(name=session['username']).first().id,
                                   priest_temple=funeral_form.priest_temple.data)
             db.session.add(new_funeral)
@@ -206,7 +198,7 @@ def user_funerals():
             print('Form not valid')
 
     funerals = Funeral.query.join(FuneralHome).filter(FuneralHome.name == session['username']).all()
-    funeral_header = ['id', 'date', 'total_price', 'buried', 'priest and temple']
+    funeral_header = ['id', 'date', 'total_price', 'buried on this funeral', 'priest and temple']
 
     return render_template('user_funerals.html', funeral_form=funeral_form, funerals=funerals,
                            funeral_header=funeral_header, delete_record_form=delete_record_form,
