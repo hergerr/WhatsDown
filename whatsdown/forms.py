@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask import session
 from wtforms import StringField, PasswordField, SelectField
-from .models import Buried, FuneralHome, Quarter, Funeral, Container, Outfit, PriestTemple
+from .models import FuneralHome, Quarter, Funeral, Container, Outfit, PriestTemple
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired
 from wtforms.fields.html5 import IntegerField, DateField
@@ -50,7 +50,7 @@ class AddBuriedForm(FlaskForm):
     birth_date = DateField('birth date')
     death_date = DateField('death date')
     cause_of_death = StringField('cause of death')
-    quarter = QuerySelectField('quarter', query_factory=lambda: Quarter.query.all(), validators=[InputRequired()])
+    quarter = QuerySelectField('quarter', query_factory=lambda: Quarter.query.filter_by().all())
     funeral = QuerySelectField('funeral', query_factory=lambda: Funeral.query.join(FuneralHome)
                                .filter_by(name=session['username']).all())
     container = QuerySelectField('container', query_factory=lambda: Container.query.all())
@@ -61,23 +61,9 @@ class DeleteRecordForm(FlaskForm):
     id = IntegerField('ID', validators=[InputRequired()])
 
 
-# TODO ponizsze klasy moga dziedziczyc po formach do dodania
-class EditBuriedForm(FlaskForm):
+class EditBuriedForm(AddBuriedForm):
     id = IntegerField('ID', validators=[InputRequired()])
-    first_name = StringField('first name')
-    last_name = StringField('last name')
-    birth_date = DateField('birth date')
-    death_date = DateField('death date')
-    cause_of_death = StringField('cause of death')
-    quarter = QuerySelectField('quarter', query_factory=lambda: Quarter.query.all())
-    funeral = QuerySelectField('funeral', query_factory=lambda: Funeral.query.join(FuneralHome)
-                               .filter_by(name=session['username']).all())
-    container = QuerySelectField('container', query_factory=lambda: Container.query.all())
-    outfit = QuerySelectField('outfit', query_factory=lambda: Outfit.query.all())
 
 
-class EditFuneralForm(FlaskForm):
+class EditFuneralForm(AddFuneralForm):
     id = IntegerField('ID', validators=[InputRequired()])
-    date = DateField('date', validators=[InputRequired()])
-    priest_temple = QuerySelectField('priest and temple', query_factory=lambda: PriestTemple.query.all(),
-                                     validators=[InputRequired()])
