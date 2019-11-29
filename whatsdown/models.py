@@ -32,7 +32,7 @@ class FuneralHome(db.Model, UserMixin):
     password = db.Column(db.String(300), nullable=False)
 
     # relationships
-    funerals = relationship("Funeral", back_populates="funeral_home", cascade="save-update, merge, delete")
+    funerals = relationship("Funeral", back_populates="funeral_home")
 
     def __repr__(self):
         return f'Dom pogrzebowy {self.name}'
@@ -166,12 +166,12 @@ class Funeral(db.Model):
     total_price = db.Column(db.Integer, nullable=False)
 
     # foreign keys
-    funeral_home_id = db.Column(db.Integer, ForeignKey('funeral_home.id'), nullable=False)
+    funeral_home_id = db.Column(db.Integer, ForeignKey('funeral_home.id'), nullable=True)
     priest_temple_id = db.Column(db.Integer, ForeignKey('priest_temple.id'), nullable=False)
 
     # relationships
     buried = relationship("Buried", back_populates="funeral", cascade="save-update, merge, delete")
-    funeral_home = relationship("FuneralHome", back_populates="funerals", single_parent=True)
+    funeral_home = relationship("FuneralHome", back_populates="funerals")
     priest_temple = relationship("PriestTemple", single_parent=True)
 
     def __repr__(self):
