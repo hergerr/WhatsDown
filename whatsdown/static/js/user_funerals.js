@@ -13,7 +13,6 @@ const UIcontroller = (function () {
 
         inputItemEditID: '.input-edit-id',
         inputItemEditDate: '.input-edit-date',
-        // inputItemEditTotalPrice: '.input-edit-total_price',
 
         inputItemDeleteID: '.input-delete-id'
     };
@@ -25,12 +24,10 @@ const UIcontroller = (function () {
             item = event.target.parentNode.parentNode;
             itemID = item.id.split('-')[1];
             itemDate = item.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling;
-            // itemTotalPrice = itemDate.nextSibling.nextSibling;
 
             if (event.target.className === "btn btn-edit") {
                 document.querySelector(DOMstrings.inputItemEditID).value = itemID;
                 document.querySelector(DOMstrings.inputItemEditDate).value = itemDate.textContent;
-                // document.querySelector(DOMstrings.inputItemEditTotalPrice).value = itemTotalPrice.textContent;
             }
 
             if (event.target.className === "btn btn-remove") {

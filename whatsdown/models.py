@@ -28,6 +28,7 @@ class FuneralHome(db.Model, UserMixin):
     county = db.Column(db.Text)
     locality = db.Column(db.Text)
     phone = db.Column(db.Text)
+    price = db.Column(db.Integer, nullable=False)
     login = db.Column(db.String(30), nullable=False, unique=True)
     password = db.Column(db.String(300), nullable=False)
 

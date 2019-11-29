@@ -3,7 +3,8 @@ from whatsdown import app, db
 from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm, AddFuneralForm, AddBuriedForm, \
     DeleteRecordForm, EditBuriedForm, EditFuneralForm
 from collections import Counter
-from whatsdown.models import Administrator, FuneralHome, Buried, Funeral, Priest, Outfit, Container
+from whatsdown.models import Administrator, FuneralHome, Buried, Funeral, Priest, Outfit, Container, PriestTemple, \
+    Quarter, Tombstone
 from werkzeug.security import generate_password_hash, check_password_hash
 from whatsdown.utils import check_logged_in_user
 
@@ -59,7 +60,7 @@ def statistics():
 
     most_expensive_funeal = Funeral.query.order_by(Funeral.total_price)[-1]
 
-    burieds = Buried.query.all()  # Form F.M: it's on purpose, late i use it in loop and i want do distinguish it
+    burieds = Buried.query.all()  # For F.M.: It's on purpose, late i use it in loop and i want do distinguish it
     counter = Counter([buried.cause_of_death for buried in burieds])
     most_popular_cause_of_death = counter.most_common(1)[0]
 
@@ -99,7 +100,7 @@ def signup_user():
         print(form.phone.data)
         new_user = FuneralHome(login=form.username.data, password=hashed_password, name=form.name.data,
                                voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
-                               phone=form.phone.data)
+                               phone=form.phone.data, price=form.price.data)
         db.session.add(new_user)
         db.session.commit()
         return 'New funeral agency created'
@@ -173,12 +174,8 @@ def user_funerals():
         if edit_funeral_form.validate_on_submit():
             funeral_id = edit_funeral_form.id.data
             funeral_to_edit = Funeral.query.filter_by(id=funeral_id).first()
-
-            # TODO dodac sprawdzenie czy w bazie jest takie id
             funeral_to_edit.date = edit_funeral_form.date.data
-            # funeral_to_edit.total_price = edit_funeral_form.total_price.data
             funeral_to_edit.priest_temple = edit_funeral_form.priest_temple.data
-
             db.session.commit()
 
         elif delete_record_form.validate_on_submit():
@@ -188,9 +185,9 @@ def user_funerals():
             db.session.commit()
 
         elif funeral_form.validate_on_submit():
-            new_funeral = Funeral(date=funeral_form.date.data, total_price=funeral_form.total_price.data,
-                                  funeral_home_id=FuneralHome.query.filter_by(name=session['username']).first().id,
-                                  priest_temple=funeral_form.priest_temple.data)
+            new_funeral = Funeral(date=funeral_form.date.data, priest_temple=funeral_form.priest_temple.data,
+                                  funeral_home=FuneralHome.query.filter_by(name=session['username']).first())
+            new_funeral.total_price = 0
             db.session.add(new_funeral)
             db.session.commit()
 

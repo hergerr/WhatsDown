@@ -36,11 +36,11 @@ class RegisterUserForm(FlaskForm):
     county = StringField('county', validators=[InputRequired()])
     locality = StringField('locality', validators=[InputRequired()])
     phone = StringField('phone', validators=[InputRequired()])
+    price = IntegerField('price', validators=[InputRequired()])
 
 
 class AddFuneralForm(FlaskForm):
     date = DateField('date', validators=[InputRequired()])
-    total_price = IntegerField('total price')
     priest_temple = QuerySelectField('priest and temple', query_factory=lambda: PriestTemple.query.all())
 
 
@@ -50,7 +50,7 @@ class AddBuriedForm(FlaskForm):
     birth_date = DateField('birth date')
     death_date = DateField('death date')
     cause_of_death = StringField('cause of death')
-    quarter = QuerySelectField('quarter', query_factory=lambda: Quarter.query.filter_by().all())
+    quarter = QuerySelectField('quarter', query_factory=lambda: Quarter.query.all())
     funeral = QuerySelectField('funeral', query_factory=lambda: Funeral.query.join(FuneralHome)
                                .filter_by(name=session['username']).all())
     container = QuerySelectField('container', query_factory=lambda: Container.query.all())

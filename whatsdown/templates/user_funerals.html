@@ -31,7 +31,6 @@
 <form action="{{ url_for('user_funerals') }}" method="POST">
     {{ funeral_form.hidden_tag() }}
     {{ funeral_form.date.label }}{{ funeral_form.date }}
-    {{ funeral_form.total_price.label }}{{ funeral_form.total_price }}
     {{ funeral_form.priest_temple.label }}{{ funeral_form.priest_temple }}
     <button type="submit" class="btn">Dodaj</button>
 </form>
