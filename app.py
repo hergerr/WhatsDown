@@ -45,15 +45,28 @@ def search():
         table = User
 
     column_names = table.__table__.columns.keys()  # get columns names
-    records = table.query.whooshee_search(phrase).all()  # get table records
+    try:
+        column_names.remove('login')  # remove login if present
+    except ValueError:
+        pass
 
-    DATA = []
+    try:
+        column_names.remove('password')  # remove password if present
+    except ValueError:
+        pass
 
-    for record in records:
-        row = {}
-        for column_name in column_names:
-            row[column_name] = record[column_name]
-        DATA.append(row)
+    if phrase == "":  # no whooshee_search when empty string is provided
+        records = table.query.all()
+    else:
+        records = table.query.whooshee_search(phrase).all()  # get table records containing phrase
+
+    # data = []
+    #
+    # for record in records:
+    #     row = {}
+    #     for column_name in column_names:
+    #         row[column_name] = record[column_name]
+    #     data.append(row)
 
     return render_template('search.html', column_names=column_names, records=records)
 

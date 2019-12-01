@@ -37,8 +37,8 @@ class User(db.Model, UserMixin):
     locality = db.Column(db.Text)
     phone = db.Column(db.Text)
     price = db.Column(db.Integer)
-    login = db.Column(db.String(30), nullable=False, unique=True)
-    password = db.Column(db.String(30), nullable=False)
+    login = db.deferred(db.Column(db.String(30), nullable=False, unique=True))
+    password = db.deferred(db.Column(db.String(30), nullable=False))
 
     # bidirectional relationships
     funerals = relationship("Funeral", back_populates="funeral_home")
