@@ -179,7 +179,7 @@ def signup_user():
     form = RegisterUserForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_user = User(login=form.username.data, password=hashed_password, name=form.name.data,
+        new_user = FuneralHome(login=form.username.data, password=hashed_password, name=form.name.data,
                         voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
                         phone=form.phone.data, price=form.price.data)
         db.session.add(new_user)
