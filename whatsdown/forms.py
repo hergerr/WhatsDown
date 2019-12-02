@@ -39,3 +39,7 @@ class SearchForm(FlaskForm):
                                                                                  ('temple', 'Temple'),
                                                                                  ('funeral_home', 'Funeral home')],
                            validators=[InputRequired()])
+
+
+class FilterForm(FlaskForm):
+    text = StringField('Enter the phrase to filter the results', validators=[InputRequired()])

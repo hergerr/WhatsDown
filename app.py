@@ -1,6 +1,6 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, session
 from whatsdown import app, db
-from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm, SearchForm
+from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm, SearchForm, FilterForm
 from whatsdown.models import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, login_user, logout_user
@@ -19,8 +19,10 @@ def home_page():
 
 @app.route('/search', methods=['GET'])
 def search():
+    form = FilterForm()
     category = str(request.args["category"])
     phrase = str(request.args["phrase"])
+    resource = request.query_string
 
     table = Buried
     if category == "buried":
@@ -60,15 +62,35 @@ def search():
     else:
         records = table.query.whooshee_search(phrase).all()  # get table records containing phrase
 
-    # data = []
-    #
-    # for record in records:
-    #     row = {}
-    #     for column_name in column_names:
-    #         row[column_name] = record[column_name]
-    #     data.append(row)
+    query_results = []  # list of dictionaries (dict = record) to store in session
+    for record in records:
+        row = {}
+        for column_name in column_names:
+            row[column_name] = record[column_name]
+        query_results.append(row)
 
-    return render_template('search.html', column_names=column_names, records=records)
+    session['column_names'] = column_names
+    session['query_results'] = query_results
+
+    return render_template('search.html', column_names=column_names, records=records, resource=resource, form=form)
+
+
+@app.route('/search/<string:resource>/filter', methods=['GET'])
+def filter(resource):
+    form = FilterForm()
+    text = str(request.args["text"])
+    filtered_records = []
+    column_names = session.get('column_names', None)
+    records = session.get('query_results', None)
+
+    for record in records:
+        for column_name in column_names:
+            if text.casefold() in str(record[column_name]).casefold():
+                filtered_records.append(record)
+                break
+
+    return render_template('filter.html', column_names=column_names, filtered_records=filtered_records,
+                           resource=resource, form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
