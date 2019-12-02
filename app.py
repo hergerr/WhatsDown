@@ -1,17 +1,99 @@
-from flask import render_template, redirect, url_for, session, request
+from flask import render_template, redirect, url_for, request, session
 from whatsdown import app, db
-from whatsdown.forms import LoginForm, RegisterAdminForm, RegisterUserForm, AddFuneralForm, AddBuriedForm, \
-    DeleteRecordForm, EditBuriedForm, EditFuneralForm
+from whatsdown.forms import *
+from whatsdown.models import *
 from collections import Counter
 from whatsdown.models import Administrator, FuneralHome, Buried, Funeral, Priest, Outfit, Container, PriestTemple, \
     Quarter, Tombstone
 from werkzeug.security import generate_password_hash, check_password_hash
 from whatsdown.utils import check_logged_in_user
+from flask_whooshee import *
+
+ws = WhoosheeQuery.whooshee_search
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def home_page():
-    return render_template('home.html')
+    form = SearchForm()
+    if form.validate_on_submit():
+        redirect(url_for('search'))
+    return render_template('home.html', form=form)
+
+
+@app.route('/search', methods=['GET'])
+def search():
+    form = FilterForm()
+    category = str(request.args["category"])
+    phrase = str(request.args["phrase"])
+    resource = request.query_string
+
+    table = Buried
+    if category == "buried":
+        table = Buried
+    elif category == "funeral":
+        table = Funeral
+    elif category == "cemetery":
+        table = Cemetery
+    elif category == "quarter":
+        table = Quarter
+    elif category == "outfit":
+        table = Outfit
+    elif category == "tombstone":
+        table = Tombstone
+    elif category == "container":
+        table = Container
+    elif category == "priest":
+        table = Priest
+    elif category == "temple":
+        table = Temple
+    elif category == "funeral_home":
+        table = User
+
+    column_names = table.__table__.columns.keys()  # get columns names
+    try:
+        column_names.remove('login')  # remove login if present
+    except ValueError:
+        pass
+
+    try:
+        column_names.remove('password')  # remove password if present
+    except ValueError:
+        pass
+
+    if phrase == "":  # no whooshee_search when empty string is provided
+        records = table.query.all()
+    else:
+        records = table.query.whooshee_search(phrase).all()  # get table records containing phrase
+
+    query_results = []  # list of dictionaries (dict = record) to store in session
+    for record in records:
+        row = {}
+        for column_name in column_names:
+            row[column_name] = record[column_name]
+        query_results.append(row)
+
+    session['column_names'] = column_names
+    session['query_results'] = query_results
+
+    return render_template('search.html', column_names=column_names, records=records, resource=resource, form=form)
+
+
+@app.route('/search/<string:resource>/filter', methods=['GET'])
+def filter(resource):
+    form = FilterForm()
+    text = str(request.args["text"])
+    filtered_records = []
+    column_names = session.get('column_names', None)
+    records = session.get('query_results', None)
+
+    for record in records:
+        for column_name in column_names:
+            if text.casefold() in str(record[column_name]).casefold():
+                filtered_records.append(record)
+                break
+
+    return render_template('filter.html', column_names=column_names, filtered_records=filtered_records,
+                           resource=resource, form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -97,10 +179,9 @@ def signup_user():
     form = RegisterUserForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
-        print(form.phone.data)
-        new_user = FuneralHome(login=form.username.data, password=hashed_password, name=form.name.data,
-                               voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
-                               phone=form.phone.data, price=form.price.data)
+        new_user = User(login=form.username.data, password=hashed_password, name=form.name.data,
+                        voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
+                        phone=form.phone.data, price=form.price.data)
         db.session.add(new_user)
         db.session.commit()
         return 'New funeral agency created'

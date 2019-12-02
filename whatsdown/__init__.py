@@ -5,6 +5,8 @@ import flask_admin
 from flask_admin.contrib.sqla import ModelView
 from whatsdown.config import name, db_name, password
 from flask_bootstrap import Bootstrap
+from flask_whooshee import Whooshee
+
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -12,35 +14,14 @@ Bootstrap(app)
 # db and admin config
 app.secret_key = 'w4lepsze'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@127.0.0.1/{}'.format(name, password, db_name)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+app.config['WHOOSHEE_MIN_STRING_LEN'] = 1
+app.config['WHOOSHEE_DIR'] = 'whooshee_indexes'
 
 db = SQLAlchemy(app)
 Migrate(app, db)
 admin = flask_admin.Admin(app)
 
-from .models import Administrator, FuneralHome, Buried, Tombstone, Quarter, Priest, Temple, Cemetery, Outfit, Container, \
-    Funeral, PriestTemple
-
-
-class CustomModelView(ModelView):
-    def is_accessible(self):
-        if 'admin' in session:
-            return True
-        else:
-            return abort(404)
-
-
-# here models are registered to admin
-admin.add_view(CustomModelView(Administrator, db.session))
-admin.add_view(CustomModelView(FuneralHome, db.session))
-admin.add_view(CustomModelView(Buried, db.session))
-admin.add_view(CustomModelView(Tombstone, db.session))
-admin.add_view(CustomModelView(Quarter, db.session))
-admin.add_view(CustomModelView(Priest, db.session))
-admin.add_view(CustomModelView(Temple, db.session))
-admin.add_view(CustomModelView(Cemetery, db.session))
-admin.add_view(CustomModelView(Outfit, db.session))
-admin.add_view(CustomModelView(Container, db.session))
-admin.add_view(CustomModelView(Funeral, db.session))
-admin.add_view(CustomModelView(PriestTemple, db.session))
+whooshee = Whooshee(app)
+whooshee.reindex()

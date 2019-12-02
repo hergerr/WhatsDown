@@ -1,10 +1,11 @@
 from whatsdown import db
-from flask_login import UserMixin
 from sqlalchemy.orm import relationship, Session
 from sqlalchemy import ForeignKey, event
+from flask import abort, session
+from flask_login import UserMixin
 from datetime import date, datetime
-from sqlalchemy.event import listen
-from sqlalchemy.pool import Pool
+from whatsdown import admin, whooshee
+from flask_admin.contrib.sqla import ModelView
 
 
 class Administrator(db.Model, UserMixin):
@@ -18,6 +19,7 @@ class Administrator(db.Model, UserMixin):
         return f'Administrator {self.id}, login {self.login}'
 
 
+@whooshee.register_model('name', 'voivodeship', 'county', 'locality', 'phone')
 class FuneralHome(db.Model, UserMixin):
     # connected with funeral o-t-m
     # atributes
@@ -29,8 +31,8 @@ class FuneralHome(db.Model, UserMixin):
     locality = db.Column(db.Text)
     phone = db.Column(db.Text)
     price = db.Column(db.Integer, nullable=False)
-    login = db.Column(db.String(30), nullable=False, unique=True)
-    password = db.Column(db.String(300), nullable=False)
+    login = db.deferred(db.Column(db.String(30), nullable=False, unique=True))
+    password = db.deferred(db.Column(db.String(300), nullable=False))
 
     # relationships
     funerals = relationship("Funeral", back_populates="funeral_home")
@@ -38,7 +40,11 @@ class FuneralHome(db.Model, UserMixin):
     def __repr__(self):
         return f'Dom pogrzebowy {self.name}'
 
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
+
+@whooshee.register_model('manufacturer', 'material')
 class Tombstone(db.Model):  # connected with quarter o-t-m
     # atributes
     __tablename__ = 'tombstone'
@@ -49,6 +55,9 @@ class Tombstone(db.Model):  # connected with quarter o-t-m
 
     def __repr__(self):
         return f'Nagrobek marki {self.manufacturer}, model {self.material}'
+
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
 
 class Quarter(db.Model):
@@ -74,7 +83,11 @@ class Quarter(db.Model):
     def __repr__(self):
         return f'Kwatera na cmentarzu nr {self.cemetery_id}, x={self.x_coord}, y={self.y_coord}'
 
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
+
+@whooshee.register_model('voivodeship', 'county', 'locality', 'street', 'faith')
 class Cemetery(db.Model):
     # connected with quarter m-t-o
     # atributes
@@ -92,7 +105,11 @@ class Cemetery(db.Model):
     def __repr__(self):
         return f'Cmentarz w woj. {self.voivodeship}, powiat {self.county}, miejscowość {self.locality}, ulica {self.street}'
 
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
+
+@whooshee.register_model('type_of_clothing', 'size', 'brand', 'color')
 class Outfit(db.Model):
     # connected with buried m-t-o
 
@@ -108,7 +125,11 @@ class Outfit(db.Model):
     def __repr__(self):
         return f'{self.type_of_clothing}, marki  {self.brand}, rozmiar {self.size}, w kolorze {self.color}'
 
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
+
+@whooshee.register_model('type_of_container', 'manufacturer', 'material')
 class Container(db.Model):
     # connected with buried m-t-o
 
@@ -123,7 +144,11 @@ class Container(db.Model):
     def __repr__(self):
         return f'Pojemnik {self.manufacturer}, wykonany z {self.material}'
 
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
+
+@whooshee.register_model('first_name', 'last_name', 'cause_of_death')
 class Buried(db.Model):
     # connected with outfit o-t-m
     # connected with container o-t-m
@@ -154,6 +179,9 @@ class Buried(db.Model):
     def __repr__(self):
         return f'Pochowany {self.first_name} {self.last_name}'
 
+    def __getitem__(self, field):
+        return self.__dict__[field]
+
 
 class Funeral(db.Model):
     # connected with funeral_home o-t-m
@@ -178,7 +206,11 @@ class Funeral(db.Model):
     def __repr__(self):
         return f'Pogrzeb nr {self.id}'
 
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
+
+@whooshee.register_model('title', 'first_name', 'last_name', 'religion')
 class Priest(db.Model):
     # connected with temple m-t-m
 
@@ -197,7 +229,11 @@ class Priest(db.Model):
     def __repr__(self):
         return f'Kapłan {self.first_name}, {self.last_name}'
 
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
+
+@whooshee.register_model('voivodeship', 'county', 'locality', 'religion', 'rank')
 class Temple(db.Model):
     # connected with priest m-t-m
 
@@ -216,6 +252,9 @@ class Temple(db.Model):
 
     def __repr__(self):
         return f'Swiątynia wyznania {self.religion}, umiejscowiona w {self.voivodeship}, {self.county}, {self.locality}'
+
+    def __getitem__(self, field):
+        return self.__dict__[field]
 
 
 class PriestTemple(db.Model):
@@ -244,3 +283,24 @@ def delete_reference(mapper, connection, target):
         # if this buried was last in funeral
         if target.funeral and not target.funeral.buried:
             session.delete(target.funeral)
+
+
+class CustomModelView(ModelView):
+    def is_accessible(self):
+        if 'admin' in session:
+            return True
+        else:
+            return abort(404)
+
+
+admin.add_view(CustomModelView(Administrator, db.session))
+admin.add_view(CustomModelView(FuneralHome, db.session))
+admin.add_view(CustomModelView(Buried, db.session))
+admin.add_view(CustomModelView(Tombstone, db.session))
+admin.add_view(CustomModelView(Quarter, db.session))
+admin.add_view(CustomModelView(Priest, db.session))
+admin.add_view(CustomModelView(Temple, db.session))
+admin.add_view(CustomModelView(Cemetery, db.session))
+admin.add_view(CustomModelView(Outfit, db.session))
+admin.add_view(CustomModelView(Container, db.session))
+admin.add_view(CustomModelView(Funeral, db.session))

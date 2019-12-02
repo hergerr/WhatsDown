@@ -1,12 +1,13 @@
 {% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}
-Demo App
+    Demo App
 {% endblock %}
 
 {% block styles %}
-{{super()}}
-<link rel="stylesheet" href="{{url_for('.static', filename='starter-template.css')}}">
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('.static', filename='starter-template.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -40,6 +41,15 @@ Demo App
         <h1>Bootstrap starter template</h1>
         <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
       </div>
+
+    <form method="GET" name="search" action="search">
+        <div class="form-group">
+            {{ wtf.form_field(form.category) }}
+            {{ wtf.form_field(form.phrase) }}
+        </div>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
+    </form>
 
     </div><!-- /.container -->
 {% endblock %}

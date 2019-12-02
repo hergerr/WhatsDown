@@ -39,6 +39,25 @@ class RegisterUserForm(FlaskForm):
     price = IntegerField('price', validators=[InputRequired()])
 
 
+class SearchForm(FlaskForm):
+    phrase = StringField('Enter the phrase you want to search for or leave the field empty to see all the contents')
+    category = SelectField('Choose the category you want to search in', choices=[('buried', 'Buried'),
+                                                                                 ('funeral', 'Funeral'),
+                                                                                 ('cemetery', 'Cemetery'),
+                                                                                 ('quarter', 'Quarter'),
+                                                                                 ('outfit', 'Outfit'),
+                                                                                 ('tombstone', 'Tombstone'),
+                                                                                 ('container', 'Container'),
+                                                                                 ('priest', 'Priest'),
+                                                                                 ('temple', 'Temple'),
+                                                                                 ('funeral_home', 'Funeral home')],
+                           validators=[InputRequired()])
+
+
+class FilterForm(FlaskForm):
+    text = StringField('Enter the phrase to filter the results', validators=[InputRequired()])
+
+
 class AddFuneralForm(FlaskForm):
     date = DateField('date', validators=[InputRequired()])
     priest_temple = QuerySelectField('priest and temple', query_factory=lambda: PriestTemple.query.all())
