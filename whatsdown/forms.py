@@ -55,7 +55,7 @@ class SearchForm(FlaskForm):
 
 
 class FilterForm(FlaskForm):
-    text = StringField('Enter the phrase to filter the results', validators=[InputRequired()])
+    text = StringField('Enter a phrase to filter the results or leave the field empty to unfilter')
 
 
 class AddFuneralForm(FlaskForm):

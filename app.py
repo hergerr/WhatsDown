@@ -47,7 +47,7 @@ def search():
     elif category == "temple":
         table = Temple
     elif category == "funeral_home":
-        table = User
+        table = FuneralHome
 
     column_names = table.__table__.columns.keys()  # get columns names
     try:
@@ -86,11 +86,14 @@ def filter(resource):
     column_names = session.get('column_names', None)
     records = session.get('query_results', None)
 
-    for record in records:
-        for column_name in column_names:
-            if text.casefold() in str(record[column_name]).casefold():
-                filtered_records.append(record)
-                break
+    if text == "":
+        filtered_records = records
+    else:
+        for record in records:
+            for column_name in column_names:
+                if text.casefold() in str(record[column_name]).casefold():
+                    filtered_records.append(record)
+                    break
 
     return render_template('filter.html', column_names=column_names, filtered_records=filtered_records,
                            resource=resource, form=form)
@@ -180,8 +183,8 @@ def signup_user():
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
         new_user = FuneralHome(login=form.username.data, password=hashed_password, name=form.name.data,
-                        voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
-                        phone=form.phone.data, price=form.price.data)
+                               voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
+                               phone=form.phone.data, price=form.price.data)
         db.session.add(new_user)
         db.session.commit()
         return 'New funeral agency created'
