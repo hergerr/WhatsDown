@@ -103,6 +103,12 @@ def filter(resource):
 def login():
     form = LoginForm()
 
+    if 'logged' in session:
+        if 'admin' in session:
+            return redirect('/admin')
+        elif 'user' in session:
+            return redirect(url_for('dashboard'))
+
     if form.validate_on_submit():
         admin = Administrator.query.filter_by(login=form.username.data).first()
         user = FuneralHome.query.filter_by(login=form.username.data).first()
