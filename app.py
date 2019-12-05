@@ -51,6 +51,11 @@ def search():
 
     column_names = table.__table__.columns.keys()  # get columns names
     try:
+        column_names.remove('id')
+    except ValueError:
+        pass
+
+    try:
         column_names.remove('login')  # remove login if present
     except ValueError:
         pass
