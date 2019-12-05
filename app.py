@@ -124,8 +124,15 @@ def user_buried():
     if request.method == 'POST':
         if edit_buried_form.validate_on_submit():
 
+
+
             buried_id = edit_buried_form.id.data
             buried_to_edit = Buried.query.filter_by(id=buried_id).first()
+
+            # change funeral total price when buried is deleted
+            funeral = Funeral.query.filter_by(id=buried_to_edit.funeral_id).first()
+            funeral.total_price = funeral.total_price - buried_to_edit.container.price - buried_to_edit.outfit.price - buried_to_edit.quarter.price
+            print(funeral.total_price)
 
             buried_to_edit.first_name = edit_buried_form.first_name.data
             buried_to_edit.last_name = edit_buried_form.last_name.data
@@ -139,9 +146,19 @@ def user_buried():
 
             db.session.commit()
 
+            funeral.total_price = funeral.total_price + buried_to_edit.container.price + buried_to_edit.outfit.price + buried_to_edit.quarter.price
+            print(funeral.total_price)
+
+            db.session.commit()
+
         elif delete_record_form.validate_on_submit():
             buried_id = delete_record_form.id.data
             buried_to_delete = Buried.query.filter_by(id=buried_id).first()
+
+            # change funeral total price when buried is deleted
+            funeral = Funeral.query.filter_by(id=buried_to_delete.funeral_id).first()
+            funeral.total_price = funeral.total_price - buried_to_delete.container.price - buried_to_delete.outfit.price - buried_to_delete.quarter.price
+
             db.session.delete(buried_to_delete)
             db.session.commit()
 
@@ -152,6 +169,9 @@ def user_buried():
                                 container_id=buried_form.container.data.id, quarter_id=buried_form.quarter.data.id,
                                 funeral_id=buried_form.funeral.data.id)
             db.session.add(new_buried)
+            db.session.commit()
+            # must be after commit, otherwise doesnt see it
+            new_buried.funeral.total_price = new_buried.funeral.total_price + new_buried.container.price + new_buried.outfit.price + new_buried.quarter.price
             db.session.commit()
 
     buried = Buried.query.join(Funeral).join(FuneralHome).filter_by(name=session['username']).all()
@@ -187,8 +207,12 @@ def user_funerals():
         elif funeral_form.validate_on_submit():
             new_funeral = Funeral(date=funeral_form.date.data, priest_temple=funeral_form.priest_temple.data,
                                   funeral_home=FuneralHome.query.filter_by(name=session['username']).first())
+
             new_funeral.total_price = 0
             db.session.add(new_funeral)
+            db.session.commit()
+            # need to be after commit, otherwise doesnt see any attribute
+            new_funeral.total_price = new_funeral.priest_temple.priest.price + new_funeral.funeral_home.price
             db.session.commit()
 
         else:
