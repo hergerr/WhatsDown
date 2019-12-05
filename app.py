@@ -109,6 +109,7 @@ def login():
         elif 'user' in session:
             return redirect(url_for('dashboard'))
 
+    session.permanent = True
     if form.validate_on_submit():
         admin = Administrator.query.filter_by(login=form.username.data).first()
         user = FuneralHome.query.filter_by(login=form.username.data).first()
@@ -214,15 +215,12 @@ def user_buried():
     if request.method == 'POST':
         if edit_buried_form.validate_on_submit():
 
-
-
             buried_id = edit_buried_form.id.data
             buried_to_edit = Buried.query.filter_by(id=buried_id).first()
 
             # change funeral total price when buried is deleted
             funeral = Funeral.query.filter_by(id=buried_to_edit.funeral_id).first()
             funeral.total_price = funeral.total_price - buried_to_edit.container.price - buried_to_edit.outfit.price - buried_to_edit.quarter.price
-            print(funeral.total_price)
 
             buried_to_edit.first_name = edit_buried_form.first_name.data
             buried_to_edit.last_name = edit_buried_form.last_name.data
@@ -237,7 +235,6 @@ def user_buried():
             db.session.commit()
 
             funeral.total_price = funeral.total_price + buried_to_edit.container.price + buried_to_edit.outfit.price + buried_to_edit.quarter.price
-            print(funeral.total_price)
 
             db.session.commit()
 
