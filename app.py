@@ -222,8 +222,9 @@ def user_buried():
             funeral = Funeral.query.filter_by(id=buried_to_edit.funeral_id).first()
             funeral.total_price = funeral.total_price - buried_to_edit.container.price - buried_to_edit.outfit.price - buried_to_edit.quarter.price
 
-            if edit_buried_form.birth_date.data > edit_buried_form.death_date.data:
-                return 'Wrong birth and death date'
+            if edit_buried_form.birth_date.data and edit_buried_form.death_date.data:
+                if edit_buried_form.birth_date.data > edit_buried_form.death_date.data:
+                    return 'Wrong birth and death date'
 
             buried_to_edit.first_name = edit_buried_form.first_name.data
             buried_to_edit.last_name = edit_buried_form.last_name.data
@@ -253,9 +254,9 @@ def user_buried():
             db.session.commit()
 
         elif buried_form.validate_on_submit():
-
-            if buried_form.birth_date.data > buried_form.death_date.data:
-                return 'Wrong birth and death date'
+            if edit_buried_form.birth_date.data and edit_buried_form.death_date.data:
+                if buried_form.birth_date.data > buried_form.death_date.data:
+                    return 'Wrong birth and death date'
 
             new_buried = Buried(first_name=buried_form.first_name.data, last_name=buried_form.last_name.data,
                                 birth_date=buried_form.birth_date.data, death_date=buried_form.death_date.data,

@@ -80,7 +80,7 @@ class Quarter(db.Model):
     tombstone = relationship("Tombstone")
 
     def __repr__(self):
-        return f'Kwatera na cmentarzu nr {self.cemetery_id}, x={self.x_coord}, y={self.y_coord}'
+        return f'Kwatera na cmentarzu w {self.cemetery.locality} przy ulicy {self.cemetery.street}, x={self.x_coord}, y={self.y_coord}'
 
     def __getitem__(self, field):
         return self.__dict__[field]
@@ -270,7 +270,7 @@ class PriestTemple(db.Model):
                           passive_deletes=True)
 
     def __repr__(self):
-        return f'Kapłan {self.priest_id}, Świątynia {self.temple_id}'
+        return f'Kapłan {self.priest.first_name} {self.priest.last_name}, Świątynia {self.temple.rank} w {self.temple.locality} o pojemności {self.temple.capacity}'
 
 
 # usuwanie pogrzebu bez pochowanych
