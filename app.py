@@ -256,6 +256,12 @@ def user_buried():
             funeral = Funeral.query.filter_by(id=buried_to_delete.funeral_id).first()
             funeral.total_price = funeral.total_price - buried_to_delete.container.price - buried_to_delete.outfit.price - buried_to_delete.quarter.price
 
+            quarter_id = buried_to_delete.quarter_id
+            people_in_quarter = Buried.query.filter_by(quarter_id=quarter_id).all()
+            if len(people_in_quarter) <= 1:
+                quarter_to_free = Quarter.query.filter_by(id=quarter_id).first()
+                quarter_to_free.tombstone = None
+
             db.session.delete(buried_to_delete)
             db.session.commit()
 
@@ -281,7 +287,6 @@ def user_buried():
             quarter_to_set_on.tombstone = set_tombstone_form.tombstone.data
             db.session.commit()
             return redirect(url_for('user_buried'))
-
 
     buried = Buried.query.join(Funeral).join(FuneralHome).filter_by(name=session['username']).all()
     buried_header = ['id', 'first_name', 'last_name', 'birth_date', 'death_date', 'cause_of_death', 'quarter',
@@ -310,6 +315,13 @@ def user_funerals():
         elif delete_record_form.validate_on_submit():
             funeral_id = delete_record_form.id.data
             funeral_to_delete = Funeral.query.filter_by(id=funeral_id).first()
+            buried_in_funeral = Buried.query.filter_by(funeral_id=funeral_id).all()
+            for person in buried_in_funeral:
+                quarter_id = person.quarter_id
+                people_in_quarter = Buried.query.filter_by(quarter_id=quarter_id).all()
+                if len(people_in_quarter) <= 1:
+                    quarter_to_free = Quarter.query.filter_by(id=quarter_id).first()
+                    quarter_to_free.tombstone = None
             db.session.delete(funeral_to_delete)
             db.session.commit()
 
