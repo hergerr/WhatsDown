@@ -222,6 +222,9 @@ def user_buried():
             funeral = Funeral.query.filter_by(id=buried_to_edit.funeral_id).first()
             funeral.total_price = funeral.total_price - buried_to_edit.container.price - buried_to_edit.outfit.price - buried_to_edit.quarter.price
 
+            if edit_buried_form.birth_date.data > edit_buried_form.death_date.data:
+                return 'Wrong birth and death date'
+
             buried_to_edit.first_name = edit_buried_form.first_name.data
             buried_to_edit.last_name = edit_buried_form.last_name.data
             buried_to_edit.birth_date = edit_buried_form.birth_date.data
@@ -250,6 +253,10 @@ def user_buried():
             db.session.commit()
 
         elif buried_form.validate_on_submit():
+
+            if buried_form.birth_date.data > buried_form.death_date.data:
+                return 'Wrong birth and death date'
+
             new_buried = Buried(first_name=buried_form.first_name.data, last_name=buried_form.last_name.data,
                                 birth_date=buried_form.birth_date.data, death_date=buried_form.death_date.data,
                                 cause_of_death=buried_form.cause_of_death.data, outfit_id=buried_form.outfit.data.id,
@@ -301,6 +308,8 @@ def user_funerals():
             # need to be after commit, otherwise doesnt see any attribute
             new_funeral.total_price = new_funeral.priest_temple.priest.price + new_funeral.funeral_home.price
             db.session.commit()
+
+            return redirect(url_for('user_buried'))
 
         else:
             print('Form not valid')

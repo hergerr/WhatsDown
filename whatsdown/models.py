@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship, Session
 from sqlalchemy import ForeignKey, event
 from flask import abort, session
 from flask_login import UserMixin
-from datetime import date, datetime
 from whatsdown import admin, whooshee
 from flask_admin.contrib.sqla import ModelView
 
@@ -191,7 +190,7 @@ class Funeral(db.Model):
     # atributes
     __tablename__ = 'funeral'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    date = db.Column(db.Date(), default=datetime.now(), nullable=False)
+    date = db.Column(db.Date(), nullable=False)
     total_price = db.Column(db.Integer, nullable=False)
 
     # foreign keys

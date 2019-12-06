@@ -3,7 +3,7 @@ from flask import session
 from wtforms import StringField, PasswordField, SelectField
 from .models import FuneralHome, Quarter, Funeral, Container, Outfit, PriestTemple
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from wtforms.validators import InputRequired
+from wtforms.validators import InputRequired, Optional
 from wtforms.fields.html5 import IntegerField, DateField
 
 
@@ -66,14 +66,14 @@ class AddFuneralForm(FlaskForm):
 class AddBuriedForm(FlaskForm):
     first_name = StringField('first name', validators=[InputRequired()])
     last_name = StringField('last name', validators=[InputRequired()])
-    birth_date = DateField('birth date')
-    death_date = DateField('death date')
-    cause_of_death = StringField('cause of death')
-    quarter = QuerySelectField('quarter', query_factory=lambda: Quarter.query.all())
+    birth_date = DateField('birth date', validators=[Optional()])
+    death_date = DateField('death date', validators=[Optional()])
+    cause_of_death = StringField('cause of death', validators=[Optional()])
+    quarter = QuerySelectField('quarter', query_factory=lambda: Quarter.query.all(), validators=[InputRequired()])
     funeral = QuerySelectField('funeral', query_factory=lambda: Funeral.query.join(FuneralHome)
-                               .filter_by(name=session['username']).all())
-    container = QuerySelectField('container', query_factory=lambda: Container.query.all())
-    outfit = QuerySelectField('outfit', query_factory=lambda: Outfit.query.all())
+                               .filter_by(name=session['username']).all(), validators=[InputRequired()])
+    container = QuerySelectField('container', query_factory=lambda: Container.query.all(), validators=[InputRequired()])
+    outfit = QuerySelectField('outfit', query_factory=lambda: Outfit.query.all(), validators=[InputRequired()])
 
 
 class DeleteRecordForm(FlaskForm):

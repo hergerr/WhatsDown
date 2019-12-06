@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 app.config['WHOOSHEE_MIN_STRING_LEN'] = 1
 app.config['WHOOSHEE_DIR'] = 'whooshee_indexes'
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=10)
 
 db = SQLAlchemy(app)
 Migrate(app, db)
