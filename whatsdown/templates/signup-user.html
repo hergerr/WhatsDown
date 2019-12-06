@@ -12,6 +12,14 @@
 
     <div class="container">
 
+        {% for mess in get_flashed_messages() %}
+            <div class="flash-message" role="alert">
+                {{ mess }}
+                <span class="fas fa-times btn-close-modal btn-close-flash"></span>
+            </div>
+        {% endfor %}
+
+
         <form class="form-signin" method="POST" action="/signup-user">
             <h2 class="form-signin-heading">Sign Up</h2>
             {{ form.hidden_tag() }}
@@ -27,4 +35,8 @@
         </form>
 
     </div> <!-- /container -->
+
+    <script src="../static/js/flask_msg_controller.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 {% endblock %}

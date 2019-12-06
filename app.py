@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request, session
+from flask import render_template, redirect, url_for, request, session, flash
 from whatsdown import app, db
 from whatsdown.forms import *
 from whatsdown.models import *
@@ -118,14 +118,18 @@ def login():
                 session['logged'] = True
                 session['admin'] = True
                 return redirect('/admin')
+            else:
+                flash('Wrong password')
         elif user:
             if check_password_hash(user.password, form.password.data):
                 session['logged'] = True
                 session['user'] = True
                 session['username'] = user.name
                 return redirect(url_for('dashboard'))
+            else:
+                flash('Wrong password')
         else:
-            return 'Invalid username or password'
+            flash('No such username')
 
     return render_template('login.html', form=form)
 
@@ -179,7 +183,9 @@ def signup_admin():
             new_admin = Administrator(login=form.username.data, password=hashed_password)
             db.session.add(new_admin)
             db.session.commit()
-            return 'New admin created'
+            flash('New admin created')
+        else:
+            flash('Wrong admin code')
 
     return render_template('signup-admin.html', form=form)
 
@@ -194,7 +200,7 @@ def signup_user():
                                phone=form.phone.data, price=form.price.data)
         db.session.add(new_user)
         db.session.commit()
-        return 'New funeral agency created'
+        flash('New funeral agency created')
 
     return render_template('signup-user.html', form=form)
 
