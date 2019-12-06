@@ -60,7 +60,8 @@ class FilterForm(FlaskForm):
 
 class AddFuneralForm(FlaskForm):
     date = DateField('date', validators=[InputRequired()])
-    priest_temple = QuerySelectField('priest and temple', query_factory=lambda: PriestTemple.query.all())
+    priest_temple = QuerySelectField('priest and temple', query_factory=lambda: PriestTemple.query.all(),
+                                     validators=[InputRequired()])
 
 
 class AddBuriedForm(FlaskForm):
