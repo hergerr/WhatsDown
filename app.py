@@ -180,10 +180,15 @@ def signup_admin():
     if form.validate_on_submit():
         if form.special_key.data == 'admin':
             hashed_password = generate_password_hash(form.password.data, method='sha256')
-            new_admin = Administrator(login=form.username.data, password=hashed_password)
-            db.session.add(new_admin)
-            db.session.commit()
-            flash('New admin created')
+
+            if Administrator.query.filter_by(login=form.username.data).first():
+                flash('This user already exists')
+            else:
+                new_admin = Administrator(login=form.username.data, password=hashed_password)
+                db.session.add(new_admin)
+                db.session.commit()
+                flash('New admin created')
+
         else:
             flash('Wrong admin code')
 
@@ -195,12 +200,16 @@ def signup_user():
     form = RegisterUserForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_user = FuneralHome(login=form.username.data, password=hashed_password, name=form.name.data,
-                               voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
-                               phone=form.phone.data, price=form.price.data)
-        db.session.add(new_user)
-        db.session.commit()
-        flash('New funeral agency created')
+
+        if FuneralHome.query.filter_by(login=form.username.data).first():
+            flash('This user already exists')
+        else:
+            new_user = FuneralHome(login=form.username.data, password=hashed_password, name=form.name.data,
+                                   voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
+                                   phone=form.phone.data, price=form.price.data)
+            db.session.add(new_user)
+            db.session.commit()
+            flash('New funeral agency created')
 
     return render_template('signup-user.html', form=form)
 
