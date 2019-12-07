@@ -141,7 +141,7 @@ class Container(db.Model):
     price = db.Column(db.Integer)
 
     def __repr__(self):
-        return f'Pojemnik {self.manufacturer}, wykonany z {self.material}'
+        return f'{self.type_of_container.capitalize()} marki {self.manufacturer}, wykonany z {self.material}'
 
     def __getitem__(self, field):
         return self.__dict__[field]

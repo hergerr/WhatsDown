@@ -40,7 +40,7 @@
 </div>
 {% endfor %}
 
-<h2>Dodaj pochowanego</h2>
+<h2>Dodaj pochowanego do wybranej kwatery</h2>
 <form action="{{url_for('user_buried')}}" method="POST">
     {{ buried_form.csrf_token }}
     {{ buried_form.first_name.label }} {{ buried_form.first_name }}
@@ -54,6 +54,15 @@
     {{ buried_form.outfit.label }} {{ buried_form.outfit }}
 
     <button type="submit">Dodaj</button>
+</form>
+
+<h5>Zakończ pochówek, ustawiając nagrobek na zapełnionej kwaterze</h5>
+<form action="{{url_for('user_buried')}}" method="POST">
+    {{ set_tombstone_form.csrf_token }}
+    {{ set_tombstone_form.quarter.label }} {{ set_tombstone_form.quarter }}
+    {{ set_tombstone_form.tombstone.label }} {{ set_tombstone_form.tombstone }}
+
+    <button type="submit">Ustaw</button>
 </form>
 
 <div id="buried-table">
