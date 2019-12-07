@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request, session
+from flask import render_template, redirect, url_for, request, session, flash
 from whatsdown import app, db
 from whatsdown.forms import *
 from whatsdown.models import *
@@ -118,14 +118,18 @@ def login():
                 session['logged'] = True
                 session['admin'] = True
                 return redirect('/admin')
+            else:
+                flash('Wrong password')
         elif user:
             if check_password_hash(user.password, form.password.data):
                 session['logged'] = True
                 session['user'] = True
                 session['username'] = user.name
                 return redirect(url_for('dashboard'))
+            else:
+                flash('Wrong password')
         else:
-            return 'Invalid username or password'
+            flash('No such username')
 
     return render_template('login.html', form=form)
 
@@ -176,10 +180,17 @@ def signup_admin():
     if form.validate_on_submit():
         if form.special_key.data == 'admin':
             hashed_password = generate_password_hash(form.password.data, method='sha256')
-            new_admin = Administrator(login=form.username.data, password=hashed_password)
-            db.session.add(new_admin)
-            db.session.commit()
-            return 'New admin created'
+
+            if Administrator.query.filter_by(login=form.username.data).first():
+                flash('This user already exists')
+            else:
+                new_admin = Administrator(login=form.username.data, password=hashed_password)
+                db.session.add(new_admin)
+                db.session.commit()
+                flash('New admin created')
+
+        else:
+            flash('Wrong admin code')
 
     return render_template('signup-admin.html', form=form)
 
@@ -189,12 +200,16 @@ def signup_user():
     form = RegisterUserForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_user = FuneralHome(login=form.username.data, password=hashed_password, name=form.name.data,
-                               voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
-                               phone=form.phone.data, price=form.price.data)
-        db.session.add(new_user)
-        db.session.commit()
-        return 'New funeral agency created'
+
+        if FuneralHome.query.filter_by(login=form.username.data).first():
+            flash('This user already exists')
+        else:
+            new_user = FuneralHome(login=form.username.data, password=hashed_password, name=form.name.data,
+                                   voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
+                                   phone=form.phone.data, price=form.price.data)
+            db.session.add(new_user)
+            db.session.commit()
+            flash('New funeral agency created')
 
     return render_template('signup-user.html', form=form)
 
@@ -224,7 +239,7 @@ def user_buried():
 
             if edit_buried_form.birth_date.data and edit_buried_form.death_date.data:
                 if edit_buried_form.birth_date.data > edit_buried_form.death_date.data:
-                    return 'Wrong birth and death date'
+                    flash('Wrong birth and death date')
 
             buried_to_edit.first_name = edit_buried_form.first_name.data
             buried_to_edit.last_name = edit_buried_form.last_name.data
@@ -256,7 +271,7 @@ def user_buried():
         elif buried_form.validate_on_submit():
             if edit_buried_form.birth_date.data and edit_buried_form.death_date.data:
                 if buried_form.birth_date.data > buried_form.death_date.data:
-                    return 'Wrong birth and death date'
+                    flash('Wrong birth and death date')
 
             new_buried = Buried(first_name=buried_form.first_name.data, last_name=buried_form.last_name.data,
                                 birth_date=buried_form.birth_date.data, death_date=buried_form.death_date.data,

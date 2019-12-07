@@ -1,15 +1,7 @@
-body {
-  padding-top: 50px;
-}
-.starter-template {
-  padding: 40px 15px;
-  text-align: center;
-}
-
 .flash-message {
   position: relative;
   background-color: #E93838;
-  width: 100%;
+  width: 300px;
   padding: 20px;
   color: white;
   border-radius: 7px;
