@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-import flask_admin
+from flask_admin import Admin
 from whatsdown.config import name, db_name, password
 from flask_bootstrap import Bootstrap
 from flask_whooshee import Whooshee
@@ -22,7 +22,8 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=10)
 
 db = SQLAlchemy(app)
 Migrate(app, db)
-admin = flask_admin.Admin(app)
+admin = Admin(app)
+# admin.add_link(flask_admin.MenuLink(name='Logout', category='', url="/logout"))
 
 whooshee = Whooshee(app)
 whooshee.reindex()
