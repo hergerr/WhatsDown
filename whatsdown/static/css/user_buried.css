@@ -1,0 +1,18 @@
+.flash-message {
+  position: relative;
+  background-color: #E93838;
+  width: 300px;
+  padding: 20px;
+  color: white;
+  border-radius: 7px;
+  -webkit-box-shadow: 0 4px 25px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 25px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.btn-close-flash {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  cursor: pointer;
+}
