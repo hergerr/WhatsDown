@@ -20,7 +20,7 @@
                 <th>{{ column_name }}</th>
             {% endfor %}
         </tr>
-        {% for record in records %}
+        {% for record in query_records %}
             <tr>
                 {% for column_name in column_names %}
                     <td>{{ record[column_name] }}</td>

@@ -37,7 +37,7 @@ class FuneralHome(db.Model, UserMixin):
     funerals = relationship("Funeral", back_populates="funeral_home")
 
     def __repr__(self):
-        return f'Dom pogrzebowy {self.name}'
+        return f'Dom pogrzebowy {self.name} z {self.locality}'
 
     def __getitem__(self, field):
         return self.__dict__[field]
@@ -53,7 +53,7 @@ class Tombstone(db.Model):  # connected with quarter o-t-m
     price = db.Column(db.Integer)
 
     def __repr__(self):
-        return f'Nagrobek marki {self.manufacturer}, model {self.material}'
+        return f'Nagrobek z {self.material}'
 
     def __getitem__(self, field):
         return self.__dict__[field]
@@ -80,7 +80,8 @@ class Quarter(db.Model):
     tombstone = relationship("Tombstone")
 
     def __repr__(self):
-        return f'Kwatera na cmentarzu w {self.cemetery.locality} przy ulicy {self.cemetery.street}, x={self.x_coord}, y={self.y_coord}'
+        return f'Kwatera na cmentarzu w {self.cemetery.locality} przy ulicy {self.cemetery.street}, ' \
+               f'rząd {self.x_coord}, kolumna {self.y_coord}'
 
     def __getitem__(self, field):
         return self.__dict__[field]
@@ -122,7 +123,7 @@ class Outfit(db.Model):
     price = db.Column(db.Integer)
 
     def __repr__(self):
-        return f'{self.type_of_clothing}, marki  {self.brand}, rozmiar {self.size}, w kolorze {self.color}'
+        return f'{self.type_of_clothing.capitalize()} marki  {self.brand}, rozmiar {self.size}, kolor {self.color}'
 
     def __getitem__(self, field):
         return self.__dict__[field]
@@ -176,7 +177,7 @@ class Buried(db.Model):
     outfit = relationship("Outfit")
 
     def __repr__(self):
-        return f'Pochowany {self.first_name} {self.last_name}'
+        return f'Pochowany {self.first_name} {self.last_name}, ur. {self.birth_date}, zm. {self.death_date}'
 
     def __getitem__(self, field):
         return self.__dict__[field]
@@ -203,7 +204,7 @@ class Funeral(db.Model):
     priest_temple = relationship("PriestTemple", single_parent=True)
 
     def __repr__(self):
-        return f'Pogrzeb nr {self.id}'
+        return f'Pogrzeb z {self.date}'
 
     def __getitem__(self, field):
         return self.__dict__[field]
@@ -226,7 +227,7 @@ class Priest(db.Model):
     temples = relationship('Temple', secondary="priest_temple")
 
     def __repr__(self):
-        return f'Kapłan {self.first_name}, {self.last_name}'
+        return f' {self.title.capitalize()} {self.first_name} {self.last_name}'
 
     def __getitem__(self, field):
         return self.__dict__[field]
@@ -250,7 +251,8 @@ class Temple(db.Model):
     priests = relationship('Priest', secondary="priest_temple")
 
     def __repr__(self):
-        return f'Swiątynia wyznania {self.religion}, umiejscowiona w {self.voivodeship}, {self.county}, {self.locality}'
+        return f'{self.rank.capitalize()} wyznania {self.religion} w {self.locality}, woj. {self.voivodeship}, ' \
+               f'pow. {self.county}, o pojemności {self.capacity}'
 
     def __getitem__(self, field):
         return self.__dict__[field]
@@ -270,7 +272,9 @@ class PriestTemple(db.Model):
                           passive_deletes=True)
 
     def __repr__(self):
-        return f'Kapłan {self.priest.first_name} {self.priest.last_name}, Świątynia {self.temple.rank} w {self.temple.locality} o pojemności {self.temple.capacity}'
+        return f'{self.priest.title.capitalize()} {self.priest.first_name} {self.priest.last_name}, ' \
+               f'{self.temple.rank} w {self.temple.locality}, woj. {self.temple.voivodeship}, ' \
+               f'pow. {self.temple.county}, o pojemności {self.temple.capacity}'
 
 
 # usuwanie pogrzebu bez pochowanych

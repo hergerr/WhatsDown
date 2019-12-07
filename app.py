@@ -70,17 +70,94 @@ def search():
     else:
         records = table.query.whooshee_search(phrase).all()  # get table records containing phrase
 
-    query_results = []  # list of dictionaries (dict = record) to store in session
-    for record in records:
-        row = {}
-        for column_name in column_names:
-            row[column_name] = record[column_name]
-        query_results.append(row)
+    query_records = []  # list of dictionaries (dict = record) to store in session
+
+    if category == "buried":  # having foreign keys
+        for record in records:
+            row = {}
+            for column_name in column_names:
+                data = record[column_name]
+                if data is not None and data != "":
+                    if column_name == "outfit_id":
+                        data = repr(Outfit.query.filter_by(id=data).first())
+                    elif column_name == "container_id":
+                        data = repr(Container.query.filter_by(id=data).first())
+                    elif column_name == "quarter_id":
+                        data = repr(Quarter.query.filter_by(id=data).first())
+                    elif column_name == "funeral_id":
+                        data = repr(Funeral.query.filter_by(id=data).first())
+                    row[column_name] = data
+                else:
+                    row[column_name] = "brak"
+
+            row["outfit"] = row.pop("outfit_id")
+            row["container"] = row.pop("container_id")
+            row["quarter"] = row.pop("quarter_id")
+            row["funeral"] = row.pop("funeral_id")
+            query_records.append(row)
+
+        column_names[column_names.index("outfit_id")] = "outfit"
+        column_names[column_names.index("container_id")] = "container"
+        column_names[column_names.index("quarter_id")] = "quarter"
+        column_names[column_names.index("funeral_id")] = "funeral"
+
+    elif category == "funeral":  # having foreign keys
+        for record in records:
+            row = {}
+            for column_name in column_names:
+                data = record[column_name]
+                if data is not None and data != "":
+                    if column_name == "funeral_home_id":
+                        data = repr(FuneralHome.query.filter_by(id=data).first())
+                    elif column_name == "priest_temple_id":
+                        data = repr(PriestTemple.query.filter_by(id=data).first())
+                    row[column_name] = data
+                else:
+                    row[column_name] = "brak"
+
+            row["funeral_home"] = row.pop("funeral_home_id")
+            row["priest & temple"] = row.pop("priest_temple_id")
+            query_records.append(row)
+
+        column_names[column_names.index("funeral_home_id")] = "funeral_home"
+        column_names[column_names.index("priest_temple_id")] = "priest & temple"
+
+    elif category == "quarter":  # having foreign keys
+        for record in records:
+            row = {}
+            for column_name in column_names:
+                data = record[column_name]
+                if data is not None and data != "":
+                    if column_name == "cemetery_id":
+                        data = repr(Cemetery.query.filter_by(id=data).first())
+                    elif column_name == "tombstone_id":
+                        data = repr(Tombstone.query.filter_by(id=data).first())
+                    row[column_name] = data
+                else:
+                    row[column_name] = "brak"
+
+            row["cemetery"] = row.pop("cemetery_id")
+            row["tombstone"] = row.pop("tombstone_id")
+            query_records.append(row)
+
+        column_names[column_names.index("cemetery_id")] = "cemetery"
+        column_names[column_names.index("tombstone_id")] = "tombstone"
+    else:  # no foreign keys
+        for record in records:
+            row = {}
+            for column_name in column_names:
+                data = record[column_name]
+                if data is not None and data != "":
+                    row[column_name] = data
+                else:
+                    row[column_name] = "brak"
+            query_records.append(row)
 
     session['column_names'] = column_names
-    session['query_results'] = query_results
+    session['query_records'] = query_records
 
-    return render_template('search.html', column_names=column_names, records=records, resource=resource, form=form)
+    return render_template('search.html', column_names=column_names, query_records=query_records, resource=resource,
+                           form=form)
 
 
 @app.route('/search/<string:resource>/filter', methods=['GET'])
@@ -89,14 +166,15 @@ def filter(resource):
     text = str(request.args["text"])
     filtered_records = []
     column_names = session.get('column_names', None)
-    records = session.get('query_results', None)
+    query_records = session.get('query_records', None)
 
     if text == "":
-        filtered_records = records
+        filtered_records = query_records
     else:
-        for record in records:
+        for record in query_records:
             for column_name in column_names:
-                if text.casefold() in str(record[column_name]).casefold():
+                data = record[column_name]
+                if data != "brak" and text.casefold() in str(data).casefold():
                     filtered_records.append(record)
                     break
 
@@ -210,7 +288,8 @@ def signup_user():
             flash('This user already exists')
         else:
             new_user = FuneralHome(login=form.username.data, password=hashed_password, name=form.name.data,
-                                   voivodeship=form.voivodeship.data, county=form.county.data, locality=form.locality.data,
+                                   voivodeship=form.voivodeship.data, county=form.county.data,
+                                   locality=form.locality.data,
                                    phone=form.phone.data, price=form.price.data)
             db.session.add(new_user)
             db.session.commit()
