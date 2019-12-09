@@ -79,9 +79,21 @@
         <td>{{ bur.id }}</td>
         <td>{{ bur.first_name }}</td>
         <td>{{ bur.last_name }}</td>
-        <td>{{ bur.birth_date }}</td>
-        <td>{{ bur.death_date }}</td>
-        <td>{{ bur.cause_of_death }}</td>
+          {% if bur.birth_date is not none %}
+            <td>{{ bur.birth_date }}</td>
+          {% else %}
+            <td>brak</td>
+          {% endif %}
+          {% if bur.death_date is not none %}
+            <td>{{ bur.death_date }}</td>
+          {% else %}
+            <td>brak</td>
+          {% endif %}
+          {% if bur.cause_of_death == '' or bur.cause_of_death is none%}
+              <td>brak</td>
+          {% else %}
+            <td>{{ bur.cause_of_death }}</td>
+          {% endif %}
         <td>{{ bur.quarter }}</td>
         <td>{{ bur.funeral }}</td>
         <td>{{ bur.container }}</td>
