@@ -284,7 +284,7 @@ def delete_reference(mapper, connection, target):
     @event.listens_for(Session, 'after_flush', once=True)
     def receive_after_flush(session, context):
         # if this buried was last in funeral
-        if target.funeral and not target.funeral.buried:
+        if not target.funeral.buried:
             session.delete(target.funeral)
 
 

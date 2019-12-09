@@ -350,14 +350,19 @@ def user_buried():
             funeral = Funeral.query.filter_by(id=buried_to_delete.funeral_id).first()
             funeral.total_price = funeral.total_price - buried_to_delete.container.price - buried_to_delete.outfit.price - buried_to_delete.quarter.price
 
+        
             quarter_id = buried_to_delete.quarter_id
             people_in_quarter = Buried.query.filter_by(quarter_id=quarter_id).all()
             if len(people_in_quarter) <= 1:
                 quarter_to_free = Quarter.query.filter_by(id=quarter_id).first()
                 quarter_to_free.tombstone = None
 
+            if len(funeral.buried) <= 1:
+                db.session.delete(funeral)
+
             db.session.delete(buried_to_delete)
             db.session.commit()
+
 
         elif buried_form.validate_on_submit():
             if edit_buried_form.birth_date.data and edit_buried_form.death_date.data:
