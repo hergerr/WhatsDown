@@ -50,9 +50,13 @@
                 <td>{{ fun.date }}</td>
                 <td>{{ fun.total_price }}</td>
                 <td>
-                    {% for bur in fun.buried %}
-                        {{ bur.first_name }} {{ bur.last_name }}
-                    {% endfor %}
+                    {% if fun.buried|length%}
+                        {% for bur in fun.buried %}
+                            {{ bur.first_name }} {{ bur.last_name }}
+                        {% endfor %}
+                    {% else %}
+                        brak
+                    {% endif %}
                 </td>
                 <td>{{ fun.priest_temple }}</td>
                 <td><img class="btn btn-edit" src="../static/img/icon-edit.svg" alt="Edit"></td>
