@@ -2,33 +2,31 @@ from whatsdown import db
 from sqlalchemy.orm import relationship, Session
 from sqlalchemy import ForeignKey, event
 from flask import abort, session
-from flask_login import UserMixin
 from whatsdown import admin, whooshee
 from flask_admin.contrib.sqla import ModelView
 
 
-class Administrator(db.Model, UserMixin):
+class Administrator(db.Model):
     __tablename__ = 'administrator'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     login = db.Column(db.String(30), nullable=False, unique=True)
     password = db.Column(db.String(300), nullable=False)
-    is_admin = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
-        return f'Administrator {self.id}, login {self.login}'
+        return f'Administrator {self.login}'
 
 
 @whooshee.register_model('name', 'voivodeship', 'county', 'locality', 'phone')
-class FuneralHome(db.Model, UserMixin):
+class FuneralHome(db.Model):
     # connected with funeral o-t-m
     # atributes
     __tablename__ = 'funeral_home'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    name = db.Column(db.String(30), unique=True)
-    voivodeship = db.Column(db.Text)
-    county = db.Column(db.Text)
-    locality = db.Column(db.Text)
-    phone = db.Column(db.Text)
+    name = db.Column(db.String(30), unique=True, nullable=False)
+    voivodeship = db.Column(db.Text, nullable=False)
+    county = db.Column(db.Text, nullable=False)
+    locality = db.Column(db.Text, nullable=False)
+    phone = db.Column(db.Text, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     login = db.deferred(db.Column(db.String(30), nullable=False, unique=True))
     password = db.deferred(db.Column(db.String(300), nullable=False))
@@ -48,9 +46,9 @@ class Tombstone(db.Model):  # connected with quarter o-t-m
     # atributes
     __tablename__ = 'tombstone'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    manufacturer = db.Column(db.Text)
-    material = db.Column(db.Text)
-    price = db.Column(db.Integer)
+    manufacturer = db.Column(db.Text, nullable=False)
+    material = db.Column(db.Text, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return f'Nagrobek z {self.material}'
@@ -66,9 +64,9 @@ class Quarter(db.Model):
     # atributes
     __tablename__ = 'quarter'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    x_coord = db.Column(db.Integer)
-    y_coord = db.Column(db.Integer)
-    price = db.Column(db.Integer)
+    x_coord = db.Column(db.Integer, nullable=False)
+    y_coord = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
 
     # foreign keys
     cemetery_id = db.Column(db.Integer, db.ForeignKey('cemetery.id'), nullable=False)
@@ -93,11 +91,11 @@ class Cemetery(db.Model):
     # atributes
     __tablename__ = 'cemetery'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    voivodeship = db.Column(db.Text)
-    county = db.Column(db.Text)
-    locality = db.Column(db.Text)
-    street = db.Column(db.Text)
-    faith = db.Column(db.Text)
+    voivodeship = db.Column(db.Text, nullable=False)
+    county = db.Column(db.Text, nullable=False)
+    locality = db.Column(db.Text, nullable=False)
+    street = db.Column(db.Text, nullable=True)
+    faith = db.Column(db.Text, nullable=False)
 
     # relationships
     quarters = relationship("Quarter", back_populates="cemetery", cascade="save-update, merge, delete")
@@ -116,11 +114,11 @@ class Outfit(db.Model):
     # atributes
     __tablename__ = 'outfit'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    type_of_clothing = db.Column(db.Text)
-    size = db.Column(db.Text)
-    brand = db.Column(db.Text)
-    color = db.Column(db.Text)
-    price = db.Column(db.Integer)
+    type_of_clothing = db.Column(db.Text, nullable=False)
+    size = db.Column(db.Text, nullable=True)
+    brand = db.Column(db.Text, nullable=True)
+    color = db.Column(db.Text, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return f'{self.type_of_clothing.capitalize()} marki  {self.brand}, rozmiar {self.size}, kolor {self.color}'
@@ -136,10 +134,10 @@ class Container(db.Model):
     # atributes
     __tablename__ = 'container'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    type_of_container = db.Column(db.Text)
-    manufacturer = db.Column(db.Text)
-    material = db.Column(db.Text)
-    price = db.Column(db.Integer)
+    type_of_container = db.Column(db.Text, nullable=False)
+    manufacturer = db.Column(db.Text, nullable=False)
+    material = db.Column(db.Text, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return f'{self.type_of_container.capitalize()} marki {self.manufacturer}, wykonany z {self.material}'
@@ -159,9 +157,9 @@ class Buried(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     first_name = db.Column(db.Text, nullable=False)
     last_name = db.Column(db.Text, nullable=False)
-    birth_date = db.Column(db.Date())
-    death_date = db.Column(db.Date())
-    cause_of_death = db.Column(db.Text)
+    birth_date = db.Column(db.Date(), nullable=True)
+    death_date = db.Column(db.Date(), nullable=True)
+    cause_of_death = db.Column(db.Text, nullable=True)
 
     # foreign keys
     outfit_id = db.Column(db.Integer, ForeignKey('outfit.id'), nullable=False)
@@ -195,7 +193,7 @@ class Funeral(db.Model):
     total_price = db.Column(db.Integer, nullable=False)
 
     # foreign keys
-    funeral_home_id = db.Column(db.Integer, ForeignKey('funeral_home.id'), nullable=True)
+    funeral_home_id = db.Column(db.Integer, ForeignKey('funeral_home.id'), nullable=False)
     priest_temple_id = db.Column(db.Integer, ForeignKey('priest_temple.id'), nullable=False)
 
     # relationships
@@ -217,11 +215,11 @@ class Priest(db.Model):
     # atributes
     __tablename__ = 'priest'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    title = db.Column(db.Text)
-    first_name = db.Column(db.Text)
-    last_name = db.Column(db.Text)
-    religion = db.Column(db.Text)
-    price = db.Column(db.Integer)
+    title = db.Column(db.Text, nullable=False)
+    first_name = db.Column(db.Text, nullable=False)
+    last_name = db.Column(db.Text, nullable=False)
+    religion = db.Column(db.Text, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
 
     # relationship
     temples = relationship('Temple', secondary="priest_temple")
@@ -240,12 +238,12 @@ class Temple(db.Model):
     # atributes
     __tablename__ = 'temple'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    voivodeship = db.Column(db.Text)
-    county = db.Column(db.Text)
-    locality = db.Column(db.Text)
-    religion = db.Column(db.Text)
-    capacity = db.Column(db.Integer)
-    rank = db.Column(db.Text)
+    voivodeship = db.Column(db.Text, nullable=False)
+    county = db.Column(db.Text, nullable=False)
+    locality = db.Column(db.Text, nullable=False)
+    religion = db.Column(db.Text, nullable=False)
+    capacity = db.Column(db.Integer, nullable=True)
+    rank = db.Column(db.Text, nullable=False)
 
     # relationship
     priests = relationship('Priest', secondary="priest_temple")
