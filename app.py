@@ -86,7 +86,7 @@ def search():
                         data = repr(Quarter.query.filter_by(id=data).first())
                     elif column_name == "funeral_id":
                         data = repr(Funeral.query.filter_by(id=data).first())
-                    row[column_name] = data
+                    row[column_name] = str(data)
                 else:
                     row[column_name] = "brak"
 
@@ -111,7 +111,7 @@ def search():
                         data = repr(FuneralHome.query.filter_by(id=data).first())
                     elif column_name == "priest_temple_id":
                         data = repr(PriestTemple.query.filter_by(id=data).first())
-                    row[column_name] = data
+                    row[column_name] = str(data)
                 else:
                     row[column_name] = "brak"
 
@@ -132,7 +132,7 @@ def search():
                         data = repr(Cemetery.query.filter_by(id=data).first())
                     elif column_name == "tombstone_id":
                         data = repr(Tombstone.query.filter_by(id=data).first())
-                    row[column_name] = data
+                    row[column_name] = str(data)
                 else:
                     row[column_name] = "brak"
 
@@ -148,7 +148,7 @@ def search():
             for column_name in column_names:
                 data = record[column_name]
                 if data is not None and data != "":
-                    row[column_name] = data
+                    row[column_name] = str(data)
                 else:
                     row[column_name] = "brak"
             query_records.append(row)
