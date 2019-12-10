@@ -70,7 +70,7 @@ class Quarter(db.Model):
 
     # foreign keys
     cemetery_id = db.Column(db.Integer, db.ForeignKey('cemetery.id'), nullable=False)
-    tombstone_id = db.Column(db.Integer, db.ForeignKey('tombstone.id'))
+    tombstone_id = db.Column(db.Integer, db.ForeignKey('tombstone.id', ondelete='SET NULL'))
 
     # relationships
     cemetery = relationship("Cemetery", back_populates="quarters",  single_parent=True)
@@ -193,7 +193,7 @@ class Funeral(db.Model):
     total_price = db.Column(db.Integer, nullable=False)
 
     # foreign keys
-    funeral_home_id = db.Column(db.Integer, ForeignKey('funeral_home.id'), nullable=False)
+    funeral_home_id = db.Column(db.Integer, ForeignKey('funeral_home.id'), nullable=True)
     priest_temple_id = db.Column(db.Integer, ForeignKey('priest_temple.id'), nullable=False)
 
     # relationships
