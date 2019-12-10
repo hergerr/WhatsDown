@@ -316,10 +316,26 @@ def signup_user():
     return render_template('signup-user.html', form=form)
 
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['POST', 'GET'])
 @check_logged_in_user
 def dashboard():
-    return render_template('dashboard.html')
+    edit_user_details = EditUserForm()
+    current_user = FuneralHome.query.filter_by(name=session['username']).first()
+
+    if request.method == 'POST':
+        if edit_user_details.validate_on_submit():
+            current_user.name = edit_user_details.name.data
+            current_user.voivodeship = edit_user_details.voivodeship.data
+            current_user.county = edit_user_details.county.data
+            current_user.locality = edit_user_details.locality.data
+            current_user.phone = edit_user_details.phone.data
+            current_user.price = edit_user_details.price.data
+            db.session.commit()
+            session['username'] = current_user.name
+        else:
+            flash('Form invalid. Pass all data')
+
+    return render_template('dashboard.html', edit_user_details=edit_user_details, current_user=current_user)
 
 
 @app.route('/dashboard/buried', methods=['GET', 'POST'])

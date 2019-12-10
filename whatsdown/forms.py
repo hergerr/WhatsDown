@@ -94,3 +94,22 @@ class EditBuriedForm(AddBuriedForm):
 
 class EditFuneralForm(AddFuneralForm):
     id = IntegerField('ID', validators=[InputRequired()])
+
+
+class EditUserForm(FlaskForm):
+    name = StringField('name', validators=[InputRequired()])
+    voivodeship = SelectField('voivodeship', choices=[('Dolnośląskie', 'Dolnośląskie'),
+                                                      ('Kujawsko-Pomorskie', 'Kujawsko-Pomorskie'),
+                                                      ('Lubelskie', 'Lubelskie'), ('Łódzkie', 'Łódzkie'),
+                                                      ('Małopolskie', 'Małopolskie'), ('Mazowieckie', 'Mazowieckie'),
+                                                      ('Opolskie', 'Opolskie'), ('Podkarpackie', 'Podkarpackie'),
+                                                      ('Podlaskie', 'Podlaskie'), ('Pomorskie', 'Pomorskie'),
+                                                      ('Śląskie', 'Śląskie'), ('Świętokrzyskie', 'Świętokrzyskie'),
+                                                      ('Warmińsko-Mazurskie', 'Warmińsko-Mazurskie'),
+                                                      ('Wielkopolskie', 'Wielkopolskie'),
+                                                      ('Zachodniopomorskie', 'Zachodniopomorskie')],
+                              validators=[InputRequired()])
+    county = StringField('county', validators=[InputRequired()])
+    locality = StringField('locality', validators=[InputRequired()])
+    phone = StringField('phone', validators=[InputRequired()])
+    price = IntegerField('price', validators=[InputRequired()])
