@@ -3,7 +3,7 @@ from flask import session
 from wtforms import StringField, PasswordField, SelectField
 from .models import FuneralHome, Quarter, Funeral, Container, Outfit, PriestTemple, Tombstone
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from wtforms.validators import InputRequired, Optional
+from wtforms.validators import InputRequired, Optional, EqualTo
 from wtforms.fields.html5 import IntegerField, DateField
 
 
@@ -14,13 +14,17 @@ class LoginForm(FlaskForm):
 
 class RegisterAdminForm(FlaskForm):
     username = StringField('username', validators=[InputRequired()])
-    password = PasswordField('password', validators=[InputRequired()])
+    password = PasswordField('password', validators=[InputRequired(), EqualTo('confirm',
+                                                                              message='Passwords must match')])
+    confirm = PasswordField('Repeat Password')
     special_key = PasswordField('admin code', validators=[InputRequired()])
 
 
 class RegisterUserForm(FlaskForm):
     username = StringField('username', validators=[InputRequired()])
-    password = PasswordField('password', validators=[InputRequired()])
+    password = PasswordField('password', validators=[InputRequired(), EqualTo('confirm',
+                                                                              message='Passwords must match')])
+    confirm = PasswordField('Repeat Password')
     name = StringField('name', validators=[InputRequired()])
     voivodeship = SelectField('voivodeship', choices=[('Dolnośląskie', 'Dolnośląskie'),
                                                       ('Kujawsko-Pomorskie', 'Kujawsko-Pomorskie'),
