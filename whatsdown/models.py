@@ -70,7 +70,7 @@ class Quarter(db.Model):
 
     # foreign keys
     cemetery_id = db.Column(db.Integer, db.ForeignKey('cemetery.id'), nullable=False)
-    tombstone_id = db.Column(db.Integer, db.ForeignKey('tombstone.id'), nullable=True)
+    tombstone_id = db.Column(db.Integer, db.ForeignKey('tombstone.id'))
 
     # relationships
     cemetery = relationship("Cemetery", back_populates="quarters",  single_parent=True)
