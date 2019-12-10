@@ -282,7 +282,7 @@ def signup_admin():
         if form.special_key.data == 'admin':
             hashed_password = generate_password_hash(form.password.data, method='sha256')
 
-            if Administrator.query.filter_by(login=form.username.data).first():
+            if Administrator.query.filter_by(login=form.username.data).first() or FuneralHome.query.filter_by(login=form.username.data).first():
                 flash('This user already exists')
             else:
                 new_admin = Administrator(login=form.username.data, password=hashed_password)
@@ -302,7 +302,7 @@ def signup_user():
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
 
-        if FuneralHome.query.filter_by(login=form.username.data).first():
+        if Administrator.query.filter_by(login=form.username.data).first() or FuneralHome.query.filter_by(login=form.username.data).first():
             flash('This user already exists')
         else:
             new_user = FuneralHome(login=form.username.data, password=hashed_password, name=form.name.data,
