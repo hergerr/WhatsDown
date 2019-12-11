@@ -455,31 +455,30 @@ def user_funerals():
             funeral_to_edit.priest_temple = edit_funeral_form.priest_temple.data
             db.session.commit()
 
-    elif delete_record_form.validate_on_submit():
-        funeral_id = delete_record_form.id.data
-        funeral_to_delete = Funeral.query.filter_by(id=funeral_id).first()
-        buried_in_funeral = Buried.query.filter_by(funeral_id=funeral_id).all()
-        for person in buried_in_funeral:
-            quarter_id = person.quarter_id
-            people_in_quarter = Buried.query.filter_by(quarter_id=quarter_id).all()
-            if len(people_in_quarter) <= 1:
-                quarter_to_free = Quarter.query.filter_by(id=quarter_id).first()
-                quarter_to_free.tombstone = None
-        db.session.delete(funeral_to_delete)
-        db.session.commit()
+        elif delete_record_form.validate_on_submit():
+            funeral_id = delete_record_form.id.data
+            funeral_to_delete = Funeral.query.filter_by(id=funeral_id).first()
+            buried_in_funeral = Buried.query.filter_by(funeral_id=funeral_id).all()
+            for person in buried_in_funeral:
+                quarter_id = person.quarter_id
+                people_in_quarter = Buried.query.filter_by(quarter_id=quarter_id).all()
+                if len(people_in_quarter) <= 1:
+                    quarter_to_free = Quarter.query.filter_by(id=quarter_id).first()
+                    quarter_to_free.tombstone = None
+            db.session.delete(funeral_to_delete)
+            db.session.commit()
 
-    elif funeral_form.validate_on_submit():
-        new_funeral = Funeral(date=funeral_form.date.data, priest_temple=funeral_form.priest_temple.data,
-                              funeral_home=FuneralHome.query.filter_by(name=session['username']).first())
+        elif funeral_form.validate_on_submit():
+            new_funeral = Funeral(date=funeral_form.date.data, priest_temple=funeral_form.priest_temple.data,
+                                  funeral_home=FuneralHome.query.filter_by(name=session['username']).first())
+            new_funeral.total_price = 0
+            db.session.add(new_funeral)
+            db.session.commit()
+            # need to be after commit, otherwise doesnt see any attribute
+            new_funeral.total_price = new_funeral.priest_temple.priest.price + new_funeral.funeral_home.price
+            db.session.commit()
 
-        new_funeral.total_price = 0
-        db.session.add(new_funeral)
-        db.session.commit()
-        # need to be after commit, otherwise doesnt see any attribute
-        new_funeral.total_price = new_funeral.priest_temple.priest.price + new_funeral.funeral_home.price
-        db.session.commit()
-
-        return redirect(url_for('user_buried'))
+            return redirect(url_for('user_buried'))
 
     else:
         print('Form not valid')
