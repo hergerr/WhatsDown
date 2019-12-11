@@ -225,7 +225,6 @@ def statistics():
     if len(most_exclusive_priests) != 0:
         most_exclusive_priest = most_exclusive_priests[-1]
 
-
     funeral_houses = FuneralHome.query.all()
     avg_fun_house_price = 0
     if len(funeral_houses) != 0:
@@ -282,7 +281,8 @@ def signup_admin():
         if form.special_key.data == 'admin':
             hashed_password = generate_password_hash(form.password.data, method='sha256')
 
-            if Administrator.query.filter_by(login=form.username.data).first() or FuneralHome.query.filter_by(login=form.username.data).first():
+            if Administrator.query.filter_by(login=form.username.data).first() or FuneralHome.query.filter_by(
+                    login=form.username.data).first():
                 flash('This user already exists')
             else:
                 new_admin = Administrator(login=form.username.data, password=hashed_password)
@@ -302,7 +302,8 @@ def signup_user():
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
 
-        if Administrator.query.filter_by(login=form.username.data).first() or FuneralHome.query.filter_by(login=form.username.data).first():
+        if Administrator.query.filter_by(login=form.username.data).first() or FuneralHome.query.filter_by(
+                login=form.username.data).first():
             flash('This user already exists')
         else:
             new_user = FuneralHome(login=form.username.data, password=hashed_password, name=form.name.data,
@@ -356,25 +357,29 @@ def user_buried():
             funeral = Funeral.query.filter_by(id=buried_to_edit.funeral_id).first()
             funeral.total_price = funeral.total_price - buried_to_edit.container.price - buried_to_edit.outfit.price - buried_to_edit.quarter.price
 
-            if edit_buried_form.birth_date.data and edit_buried_form.death_date.data:
-                if edit_buried_form.birth_date.data > edit_buried_form.death_date.data:
-                    flash('Wrong birth and death date')
+            if edit_buried_form.birth_date.data and edit_buried_form.death_date.data \
+                    and edit_buried_form.birth_date.data > edit_buried_form.death_date.data:
+                flash('Wrong birth and death date')
+            elif buried_form.death_date.data and funeral.date < buried_form.death_date.data:
+                flash('Wrong death and funeral date')
+            elif buried_form.birth_date.data and funeral.date < buried_form.birth_date.data:
+                flash('Wrong death and funeral date')
+            else:
+                buried_to_edit.first_name = edit_buried_form.first_name.data
+                buried_to_edit.last_name = edit_buried_form.last_name.data
+                buried_to_edit.birth_date = edit_buried_form.birth_date.data
+                buried_to_edit.death_date = edit_buried_form.death_date.data
+                buried_to_edit.cause_of_death = edit_buried_form.cause_of_death.data
+                buried_to_edit.outfit_id = edit_buried_form.outfit.data.id
+                buried_to_edit.container_id = edit_buried_form.container.data.id
+                buried_to_edit.quarter_id = edit_buried_form.quarter.data.id
+                buried_to_edit.funeral_id = edit_buried_form.funeral.data.id
 
-            buried_to_edit.first_name = edit_buried_form.first_name.data
-            buried_to_edit.last_name = edit_buried_form.last_name.data
-            buried_to_edit.birth_date = edit_buried_form.birth_date.data
-            buried_to_edit.death_date = edit_buried_form.death_date.data
-            buried_to_edit.cause_of_death = edit_buried_form.cause_of_death.data
-            buried_to_edit.outfit_id = edit_buried_form.outfit.data.id
-            buried_to_edit.container_id = edit_buried_form.container.data.id
-            buried_to_edit.quarter_id = edit_buried_form.quarter.data.id
-            buried_to_edit.funeral_id = edit_buried_form.funeral.data.id
+                db.session.commit()
 
-            db.session.commit()
+                funeral.total_price = funeral.total_price + buried_to_edit.container.price + buried_to_edit.outfit.price + buried_to_edit.quarter.price
 
-            funeral.total_price = funeral.total_price + buried_to_edit.container.price + buried_to_edit.outfit.price + buried_to_edit.quarter.price
-
-            db.session.commit()
+                db.session.commit()
 
         elif delete_record_form.validate_on_submit():
             buried_id = delete_record_form.id.data
@@ -384,7 +389,6 @@ def user_buried():
             funeral = Funeral.query.filter_by(id=buried_to_delete.funeral_id).first()
             funeral.total_price = funeral.total_price - buried_to_delete.container.price - buried_to_delete.outfit.price - buried_to_delete.quarter.price
 
-        
             quarter_id = buried_to_delete.quarter_id
             people_in_quarter = Buried.query.filter_by(quarter_id=quarter_id).all()
             if len(people_in_quarter) <= 1:
@@ -399,20 +403,25 @@ def user_buried():
 
 
         elif buried_form.validate_on_submit():
-            if edit_buried_form.birth_date.data and edit_buried_form.death_date.data:
-                if buried_form.birth_date.data > buried_form.death_date.data:
-                    flash('Wrong birth and death date')
-
-            new_buried = Buried(first_name=buried_form.first_name.data, last_name=buried_form.last_name.data,
+            funeral_date = Funeral.query.filter_by(id=buried_form.funeral.data.id).first().date
+            if edit_buried_form.birth_date.data and edit_buried_form.death_date.data \
+                    and buried_form.birth_date.data > buried_form.death_date.data:
+                flash('Wrong birth and death date')
+            elif buried_form.death_date.data and funeral_date < buried_form.death_date.data:
+                flash('Wrong death and funeral date')
+            elif buried_form.birth_date.data and funeral_date < buried_form.birth_date.data:
+                flash('Wrong death and funeral date')
+            else:
+                new_buried = Buried(first_name=buried_form.first_name.data, last_name=buried_form.last_name.data,
                                 birth_date=buried_form.birth_date.data, death_date=buried_form.death_date.data,
                                 cause_of_death=buried_form.cause_of_death.data, outfit_id=buried_form.outfit.data.id,
                                 container_id=buried_form.container.data.id, quarter_id=buried_form.quarter.data.id,
                                 funeral_id=buried_form.funeral.data.id)
-            db.session.add(new_buried)
-            db.session.commit()
-            # must be after commit, otherwise doesnt see it
-            new_buried.funeral.total_price = new_buried.funeral.total_price + new_buried.container.price + new_buried.outfit.price + new_buried.quarter.price
-            db.session.commit()
+                db.session.add(new_buried)
+                db.session.commit()
+                # must be after commit, otherwise doesnt see it
+                new_buried.funeral.total_price = new_buried.funeral.total_price + new_buried.container.price + new_buried.outfit.price + new_buried.quarter.price
+                db.session.commit()
 
         elif set_tombstone_form.validate_on_submit():
             quarter_id = set_tombstone_form.quarter.data.id
@@ -430,6 +439,15 @@ def user_buried():
                            edit_buried_form=edit_buried_form, set_tombstone_form=set_tombstone_form)
 
 
+def check_funeral_date(funeral_date, buried):
+    for person in buried:
+        if person.death_date and funeral_date < person.death_date:
+            print("false")
+            return False;
+    print("true")
+    return True
+
+
 @app.route('/dashboard/funerals', methods=['GET', 'POST'])
 @check_logged_in_user
 def user_funerals():
@@ -441,9 +459,16 @@ def user_funerals():
         if edit_funeral_form.validate_on_submit():
             funeral_id = edit_funeral_form.id.data
             funeral_to_edit = Funeral.query.filter_by(id=funeral_id).first()
-            funeral_to_edit.date = edit_funeral_form.date.data
-            funeral_to_edit.priest_temple = edit_funeral_form.priest_temple.data
-            db.session.commit()
+            funeral_date = funeral_to_edit.date
+            buried_on_funeral = Buried.query.filter_by(funeral_id=funeral_id).all()
+            if check_funeral_date(funeral_date, buried_on_funeral):
+                funeral_to_edit.date = edit_funeral_form.date.data
+                print(funeral_to_edit.date)
+                funeral_to_edit.priest_temple = edit_funeral_form.priest_temple.data
+                db.session.commit()
+            else:
+                flash("Wrong funeral date")
+
 
         elif delete_record_form.validate_on_submit():
             funeral_id = delete_record_form.id.data
