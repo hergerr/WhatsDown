@@ -2,17 +2,15 @@ version: '3'
 
 services:
   db:
-    image: mysql
+    image: mysql:5.7
     environment:
      - DB_HOST=mysql
-     - MYSQL_DATABASE='whatsdownDB'
-     - MYSQL_USER='whatsdown'
-     - MYSQL_PASSWORD='#W4lepsze'     
-     - MYSQL_ROOT_PASSWORD='qwerty'
+     - MYSQL_DATABASE=whatsdownDB
+     - MYSQL_USER=whatsdown
+     - MYSQL_PASSWORD=#W4lepsze
+     - MYSQL_ALLOW_EMPTY_PASSWORD='yes'
     ports:
      - "3306"
-    networks:
-     - backend
   web:
     build: .
     command: flask run
@@ -22,7 +20,3 @@ services:
       - "5000:5000"
     depends_on:
       - db
-    networks:
-     - backend
-networks:
-    backend:
