@@ -4,13 +4,15 @@ services:
   db:
     image: mysql:5.7
     environment:
-     - DB_HOST=mysql
-     - MYSQL_DATABASE=whatsdownDB
-     - MYSQL_USER=whatsdown
-     - MYSQL_PASSWORD=#W4lepsze
-     - MYSQL_ALLOW_EMPTY_PASSWORD='yes'
+      - DB_HOST=mysql
+      - MYSQL_DATABASE=whatsdownDB
+      - MYSQL_USER=whatsdown
+      - MYSQL_PASSWORD=#W4lepsze
+      - MYSQL_ALLOW_EMPTY_PASSWORD='yes'
     ports:
-     - "3306"
+      - "3306"
+    volumes:
+      - test_db:/var/lib/mysql
   web:
     build: .
     command: flask run
@@ -20,3 +22,6 @@ services:
       - "5000:5000"
     depends_on:
       - db
+volumes:
+  test_db:
+
