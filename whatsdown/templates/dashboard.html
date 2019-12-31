@@ -1,17 +1,25 @@
-{% include 'includes/_user_dashboard_header.html' %}
+{% extends 'base_user.html' %}
 
-<h1>Witaj {{ session['username'] }}, życzymy Wam miłego dnia!</h1>
+{% block styles %}
 
-<h2>Tutaj możesz edytować dane Waszego zakładu:</h2>
-<form class="form-edit" method="POST" action="{{ url_for('dashboard') }}">
-        {{ edit_user_details.csrf_token }}
-        {{ edit_user_details.name.label }} {{ edit_user_details.name(value=current_user.name) }}
-        {{ edit_user_details.voivodeship.label }} {{ edit_user_details.voivodeship(value=current_user.voivodeship) }}
-        {{ edit_user_details.county.label }} {{ edit_user_details.county(value=current_user.county) }}
-        {{ edit_user_details.locality.label }} {{ edit_user_details.locality(value=current_user.locality) }}
-        {{ edit_user_details.phone.label }} {{ edit_user_details.phone(value=current_user.phone) }}
-        {{ edit_user_details.price.label }} {{ edit_user_details.price(value=current_user.price) }}
-    <button type="submit" class="btn btn-add btn-modal-item btn-edit-item">Edytuj</button>
-</form>
+{% endblock %}
 
+{% block content %}
 
+    {% include 'includes/_user_dashboard_header.html' %}
+
+    <h1>Witaj {{ session['username'] }}, życzymy Wam miłego dnia!</h1>
+
+    <h2>Tutaj możesz edytować dane Waszego zakładu:</h2>
+    <form class="form-edit" method="POST" action="{{ url_for('dashboard') }}">
+            {{ edit_user_details.csrf_token }}
+            {{ edit_user_details.name.label }} {{ edit_user_details.name(value=current_user.name) }}
+            {{ edit_user_details.voivodeship.label }} {{ edit_user_details.voivodeship(value=current_user.voivodeship) }}
+            {{ edit_user_details.county.label }} {{ edit_user_details.county(value=current_user.county) }}
+            {{ edit_user_details.locality.label }} {{ edit_user_details.locality(value=current_user.locality) }}
+            {{ edit_user_details.phone.label }} {{ edit_user_details.phone(value=current_user.phone) }}
+            {{ edit_user_details.price.label }} {{ edit_user_details.price(value=current_user.price) }}
+        <button type="submit" class="btn btn-add btn-modal-item btn-edit-item">Edytuj</button>
+    </form>
+
+{% endblock %}

@@ -1,18 +1,11 @@
-{% extends "bootstrap/base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
-
-{% block title %}
-    Demo App
-{% endblock %}
-
 {% block styles %}
-    {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('.static', filename='css/starter-template.css') }}">
+{#    <link rel="stylesheet" href="{{ url_for('.static', filename='css/starter-template.css') }}">#}
 {% endblock %}
 
 {% block content %}
     {% include 'includes/_guest_navbar.html' %}
 
+    {#    TODO: Move all styles to css file. HTML inline styles are antipattern #}
     <table style="width:100%">
 
         <tr>
@@ -32,10 +25,10 @@
 
     <form method="GET" name="filter" action={{ url_for('filter', resource=resource)}}>
         <div class="form-group">
-            {{ wtf.form_field(form.text) }}
+            {{ form.text.label }}{{ form.text }}
         </div>
 
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button>
+        <button class="btn" type="submit">Filter</button>
     </form>
 
 {% endblock %}

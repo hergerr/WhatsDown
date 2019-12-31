@@ -1,68 +1,79 @@
-{% include 'includes/_user_dashboard_header.html' %}
-<link rel="stylesheet" href="../static/css/modal.css">
+{% extends 'base_user.html' %}
+
+{% block styles %}
+
+{% endblock %}
 
 
-<div class="modal-container">
-    <div class="modal" id="modal-edit">
-        <span class="fas fa-times btn-close-modal btn-close-edit">x</span>
-        <h3>Edycja rekordu</h3>
-        <form class="form-edit" method="POST" action="{{ url_for('user_funerals') }}">
-            {{ edit_funeral_form.csrf_token }}
-            {{ edit_funeral_form.id.label }} {{ edit_funeral_form.id(class="input-edit-id") }}
-            {{ edit_funeral_form.date.label }} {{ edit_funeral_form.date(class="input-edit-date") }}
-            {{ edit_funeral_form.priest_temple.label }} {{ edit_funeral_form.priest_temple }}
-            <button type="submit" class="btn btn-add btn-modal-item btn-edit-item">Edytuj</button>
-        </form>
+{% block content %}
+
+    {% include 'includes/_user_dashboard_header.html' %}
+    <link rel="stylesheet" href="../static/css/modal.css">
+
+
+    <div class="modal-container">
+        <div class="modal" id="modal-edit">
+            <span class="fas fa-times btn-close-modal btn-close-edit">x</span>
+            <h3>Edycja rekordu</h3>
+            <form class="form-edit" method="POST" action="{{ url_for('user_funerals') }}">
+                {{ edit_funeral_form.csrf_token }}
+                {{ edit_funeral_form.id.label }} {{ edit_funeral_form.id(class="input-edit-id") }}
+                {{ edit_funeral_form.date.label }} {{ edit_funeral_form.date(class="input-edit-date") }}
+                {{ edit_funeral_form.priest_temple.label }} {{ edit_funeral_form.priest_temple }}
+                <button type="submit" class="btn btn-add btn-modal-item btn-edit-item">Edytuj</button>
+            </form>
+        </div>
+
+        <div class="modal" id="modal-delete">
+            <span class="fas fa-times btn-close-modal btn-close-delete">x</span>
+            <h3>Usuwanie rekordu</h3>
+            <form method="POST" action="{{ url_for('user_funerals') }}">
+                {{ delete_record_form.csrf_token }}
+                {{ delete_record_form.id.label }} {{ delete_record_form.id(class_="input-delete-id") }}
+                <button type="submit" class="btn btn-add btn-modal-item btn-delete-item">Usuń</button>
+            </form>
+        </div>
     </div>
 
-    <div class="modal" id="modal-delete">
-        <span class="fas fa-times btn-close-modal btn-close-delete">x</span>
-        <h3>Usuwanie rekordu</h3>
-        <form method="POST" action="{{ url_for('user_funerals') }}">
-            {{ delete_record_form.csrf_token }}
-            {{ delete_record_form.id.label }} {{ delete_record_form.id(class_="input-delete-id") }}
-            <button type="submit" class="btn btn-add btn-modal-item btn-delete-item">Usuń</button>
-        </form>
-    </div>
-</div>
 
+    <h2>Dodaj pogrzeb</h2>
+    <form action="{{ url_for('user_funerals') }}" method="POST">
+        {{ funeral_form.hidden_tag() }}
+        {{ funeral_form.date.label }}{{ funeral_form.date }}
+        {{ funeral_form.priest_temple.label }}{{ funeral_form.priest_temple }}
+        <button type="submit" class="btn">Dodaj</button>
+    </form>
 
-<h2>Dodaj pogrzeb</h2>
-<form action="{{ url_for('user_funerals') }}" method="POST">
-    {{ funeral_form.hidden_tag() }}
-    {{ funeral_form.date.label }}{{ funeral_form.date }}
-    {{ funeral_form.priest_temple.label }}{{ funeral_form.priest_temple }}
-    <button type="submit" class="btn">Dodaj</button>
-</form>
-
-<div id="funerals-table">
-    <h2>Pogrzeby</h2>
-    <table>
-        <tr>
-            {% for columnn in funeral_header %}
-                <th>{{ columnn }}</th>
-            {% endfor %}
-        </tr>
-        {% for fun in funerals %}
-            <tr id="item-{{ fun.id }}">
-                <td><img class="btn btn-remove" src="../static/img/icon-remove.svg" alt="Remove"></td>
-                <td>{{ fun.id }}</td>
-                <td>{{ fun.date }}</td>
-                <td>{{ fun.total_price }}</td>
-                <td>
-                    {% if fun.buried|length%}
-                        {% for bur in fun.buried %}
-                            {{ bur.first_name }} {{ bur.last_name }}
-                        {% endfor %}
-                    {% else %}
-                        brak
-                    {% endif %}
-                </td>
-                <td>{{ fun.priest_temple }}</td>
-                <td><img class="btn btn-edit" src="../static/img/icon-edit.svg" alt="Edit"></td>
+    <div id="funerals-table">
+        <h2>Pogrzeby</h2>
+        <table>
+            <tr>
+                {% for columnn in funeral_header %}
+                    <th>{{ columnn }}</th>
+                {% endfor %}
             </tr>
-        {% endfor %}
-    </table>
-</div>
+            {% for fun in funerals %}
+                <tr id="item-{{ fun.id }}">
+                    <td><img class="btn btn-remove" src="../static/img/icon-remove.svg" alt="Remove"></td>
+                    <td>{{ fun.id }}</td>
+                    <td>{{ fun.date }}</td>
+                    <td>{{ fun.total_price }}</td>
+                    <td>
+                        {% if fun.buried|length%}
+                            {% for bur in fun.buried %}
+                                {{ bur.first_name }} {{ bur.last_name }}
+                            {% endfor %}
+                        {% else %}
+                            brak
+                        {% endif %}
+                    </td>
+                    <td>{{ fun.priest_temple }}</td>
+                    <td><img class="btn btn-edit" src="../static/img/icon-edit.svg" alt="Edit"></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 
-<script src="../static/js/user_funerals.js"></script>
+    <script src="../static/js/user_funerals.js"></script>
+
+{% endblock %}
