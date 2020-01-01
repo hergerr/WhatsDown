@@ -1,19 +1,17 @@
 {% extends 'base.html'  %}
 {% block styles %}
-
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/home.css') }}">
 {% endblock %}
 
 {% block content %}
 
     <div class="container">
 
-    <form method="GET" name="search" action="search">
-        <div class="form-group">
-            {{ form.category.label }}{{ form.category }}
-            {{ form.phrase.label }}{{ form.phrase }}
-        </div>
+    <h1 class="title">WhatsDown</h1>
 
-        <button class="btn" type="submit">Search</button>
+    <form method="GET" class="search-form" name="search" action="search">
+       {{ form.phrase(class='phrase') }}
+       {{ form.category(class='category')}}
     </form>
 
     </div>

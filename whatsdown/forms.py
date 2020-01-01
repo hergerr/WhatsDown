@@ -44,17 +44,18 @@ class RegisterUserForm(FlaskForm):
 
 
 class SearchForm(FlaskForm):
-    phrase = StringField('Enter the phrase you want to search for or leave the field empty to see all the contents')
-    category = SelectField('Choose the category you want to search in', choices=[('buried', 'Buried'),
-                                                                                 ('funeral', 'Funeral'),
-                                                                                 ('cemetery', 'Cemetery'),
-                                                                                 ('quarter', 'Quarter'),
-                                                                                 ('outfit', 'Outfit'),
-                                                                                 ('tombstone', 'Tombstone'),
-                                                                                 ('container', 'Container'),
-                                                                                 ('priest', 'Priest'),
-                                                                                 ('temple', 'Temple'),
-                                                                                 ('funeral_home', 'Funeral home')],
+    phrase = StringField(render_kw={"placeholder": "Enter the phrase you or leave empty"})
+    category = SelectField(render_kw={"placeholder": "Choose the category you want to search in"}, choices=[
+        ('buried', 'Buried'),
+        ('funeral', 'Funeral'),
+        ('cemetery', 'Cemetery'),
+        ('quarter', 'Quarter'),
+        ('outfit', 'Outfit'),
+        ('tombstone', 'Tombstone'),
+        ('container', 'Container'),
+        ('priest', 'Priest'),
+        ('temple', 'Temple'),
+        ('funeral_home', 'Funeral home')],
                            validators=[InputRequired()])
 
 

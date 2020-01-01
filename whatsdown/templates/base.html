@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>WhatsDown</title>
-
+    <link href="https://fonts.googleapis.com/css?family=Habibi|IM+Fell+English&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/base.css') }}">
     {% block styles %}
 
     {% endblock %}
 </head>
 <body>
     {% include 'includes/_guest_navbar.html' %}
-
     {% block content %}
 
     {% endblock %}
 
+    <div class="footer">Copyright by T. Frankiewicz, F. Mykieta and J. Wawruszczak</div>
 </body>
 </html>
