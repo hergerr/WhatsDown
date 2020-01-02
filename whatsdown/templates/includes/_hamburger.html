@@ -1,0 +1,35 @@
+<nav role="navigation">
+  <div id="menuToggle">
+    <!--
+    A fake / hidden checkbox is used as click reciever,
+    so you can use the :checked selector on it.
+    -->
+    <input type="checkbox" />
+
+    <!--
+    Some spans to act as a hamburger.
+
+    They are acting like a real hamburger,
+    not that McDonalds stuff.
+    -->
+    <span></span>
+    <span></span>
+    <span></span>
+
+    <!--
+    Too bad the menu has to be inside of the button
+    but hey, it's pure CSS magic.
+    -->
+    <ul id="menu">
+        <a href="{{ url_for('login') }}"><li>Login</li></a>
+        <a href="{{ url_for('signup_user') }}"><li>Sign Up</li></a>
+        <a href="{{ url_for('statistics') }}"><li>Statistics</li></a>
+        {% if 'user' in session %}
+            <a href="{{ url_for('dashboard') }}"><li>Dashboard</li></a>
+        {% endif %}
+        {% if 'admin' in session %}
+            <a href="/admin"><li>Admin</li></a>
+        {% endif %}
+    </ul>
+  </div>
+</nav>
