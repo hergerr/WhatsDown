@@ -1,19 +1,51 @@
 {% extends 'base.html' %}
 
 {% block styles %}
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/stats.css') }}">
 {% endblock %}
 
 {% block content %}
 
-    <h1>Statystyki WhatsDown</h1>
-    <h2>Najdroższy kapłan: {{ most_exclusive_priest }} - {{ most_exclusive_priest.price }}PLN</h2>
-    <h2>Średni koszt zakładu pogrzebowego: {{ avg_fun_house_price }} PLN</h2>
-    <h2>Ilość pochowanych w WhatsDown: {{ buried_number }}</h2>
-    <h2>Najpopularniejsza marka odzieży: {{ most_popular_outfit_brand[0] }} ({{ most_popular_outfit_brand[1] }}
-        sztuki)</h2>
-    <h2>Najpopularniejszy typ pojemnika: {{ most_popular_container_type[0] }} ({{ most_popular_container_type[1] }}
-        sztuki)</h2>
-    <h2>Najdroższy pogrzeb: {{ most_expensive_funeal }} PLN</h2>
-    <h2>Napopularniejszy rodzaj śmierci: {{ most_popular_cause_of_death[0] }}, pochłonął
-        {{ most_popular_cause_of_death[1] }} istnienia</h2>
+    <div class="container">
+        <h1 class="title">WhatsDown</h1>
+        <h3 class="title-description">General service statistics</h3>
+
+        <div class="pair">
+            <img class="stat icon-priest" src="../static/img/priest.png">
+            <h2 class="stat-description priest">Most expensive priest: {{ most_exclusive_priest }} - {{ most_exclusive_priest.price }}PLN</h2>
+        </div>
+
+        <div class="pair">
+            <img class="stat icon-funeral" src="../static/img/funeral.png">
+            <h2 class="stat-description funeral">Average funeral cost: {{ avg_fun_house_price }} PLN</h2>
+        </div>
+
+        <div class="pair">
+            <img class="stat icon-cemetery" src="../static/img/cemetery.png">
+            <h2 class="stat-description cemetery">Number of buried in WhatsDown: {{ buried_number }}</h2>
+        </div>
+
+        <div class="pair">
+            <img class="stat icon-outfit" src="../static/img/outfit.svg">
+            <h2 class="stat-description outfit">Most popular outfit: {{ most_popular_outfit_brand[0] }} ({{ most_popular_outfit_brand[1] }}
+                pcs)</h2>
+        </div>
+
+        <div class="pair">
+            <img class="stat icon-container" src="../static/img/coffin.png">
+            <h2 class="stat-description container">Most popular container: {{ most_popular_container_type[0] }} ({{ most_popular_container_type[1] }}
+                pcs)</h2>
+        </div>
+
+        <div class="pair">
+            <img class="stat icon-coin" src="../static/img/coin.png">
+            <h2 class="stat-description coin">Most expensive funeral: {{ most_expensive_funeal }} PLN</h2>
+        </div>
+
+        <div class="pair">
+            <img class="stat icon-skull" src="../static/img/skull.png">
+            <h2 class="stat-description skull">Most popular cause of death: {{ most_popular_cause_of_death[0] }}, pochłonął
+                {{ most_popular_cause_of_death[1] }} istnienia</h2>
+        </div>
+    </div>
 {% endblock %}

@@ -1,0 +1,63 @@
+html {
+    background: rgba(245, 245, 245, 1);
+}
+
+body {
+    font-family: 'IM Fell English', serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 70vw;
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 80px;
+    text-align: center;
+    margin-top: 70px;
+    font-weight: lighter;
+    margin-bottom: 0;
+}
+
+.title-description {
+    text-align: center;
+    font-size: 20px;
+    font-weight: lighter;
+    margin-bottom: 100px;
+}
+
+.pair{
+    display: flex;
+    flex-direction: row;
+    padding: 50px 0;
+}
+
+.stat {
+    width: 100px;
+}
+
+.stat-description {
+    margin-left: 100px;
+}
+
+@media (max-width: 700px) {
+    .title {
+        font-size: 45px;
+    }
+
+    .title-description {
+        font-size: 12px;
+    }
+
+    .stat {
+        width: 50px;
+    }
+
+    .stat-description {
+        font-size: 15px;
+        margin-left: 50px;
+    }
+}
+
