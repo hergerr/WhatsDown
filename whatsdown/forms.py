@@ -8,8 +8,10 @@ from wtforms.fields.html5 import IntegerField, DateField
 
 
 class LoginForm(FlaskForm):
-    username = StringField('username', validators=[InputRequired()])
-    password = PasswordField('password', validators=[InputRequired()])
+    username = StringField('username', validators=[InputRequired()],
+                           render_kw={"placeholder": "Username"})
+    password = PasswordField('password', validators=[InputRequired()],
+                             render_kw={"placeholder": "Password"})
 
 
 class RegisterAdminForm(FlaskForm):
