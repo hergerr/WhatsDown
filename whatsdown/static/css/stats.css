@@ -2,10 +2,6 @@ html {
     background: rgba(245, 245, 245, 1);
 }
 
-body {
-    font-family: 'IM Fell English', serif;
-}
-
 .container {
     display: flex;
     flex-direction: column;
@@ -17,6 +13,7 @@ body {
     font-size: 80px;
     text-align: center;
     margin-top: 70px;
+    font-family: 'IM Fell English';
     font-weight: lighter;
     margin-bottom: 0;
 }
