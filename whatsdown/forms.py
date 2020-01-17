@@ -15,19 +15,21 @@ class LoginForm(FlaskForm):
 
 
 class RegisterAdminForm(FlaskForm):
-    username = StringField('username', validators=[InputRequired()])
+    username = StringField('username', validators=[InputRequired()], render_kw={"placeholder": "Username"})
     password = PasswordField('password', validators=[InputRequired(), EqualTo('confirm',
-                                                                              message='Passwords must match')])
-    confirm = PasswordField('Repeat Password')
-    special_key = PasswordField('admin code', validators=[InputRequired()])
+                                                                              message='Passwords must match')],
+                             render_kw={"placeholder": "Password"})
+    confirm = PasswordField('Repeat Password',  render_kw={"placeholder": "Repeat password"})
+    special_key = PasswordField('admin code', validators=[InputRequired()],  render_kw={"placeholder": "Special key"})
 
 
 class RegisterUserForm(FlaskForm):
-    username = StringField('username', validators=[InputRequired()])
+    username = StringField('username', validators=[InputRequired()], render_kw={"placeholder": "Username"})
     password = PasswordField('password', validators=[InputRequired(), EqualTo('confirm',
-                                                                              message='Passwords must match')])
-    confirm = PasswordField('Repeat Password')
-    name = StringField('name', validators=[InputRequired()])
+                                                                              message='Passwords must match')],
+                             render_kw={"placeholder": "Password"})
+    confirm = PasswordField('Repeat Password', render_kw={"placeholder": "Repeat Password"})
+    name = StringField('name', validators=[InputRequired()], render_kw={"placeholder": "Company name"})
     voivodeship = SelectField('voivodeship', choices=[('Dolnośląskie', 'Dolnośląskie'),
                                                       ('Kujawsko-Pomorskie', 'Kujawsko-Pomorskie'),
                                                       ('Lubelskie', 'Lubelskie'), ('Łódzkie', 'Łódzkie'),
@@ -39,10 +41,10 @@ class RegisterUserForm(FlaskForm):
                                                       ('Wielkopolskie', 'Wielkopolskie'),
                                                       ('Zachodniopomorskie', 'Zachodniopomorskie')],
                               validators=[InputRequired()])
-    county = StringField('county', validators=[InputRequired()])
-    locality = StringField('locality', validators=[InputRequired()])
-    phone = StringField('phone', validators=[InputRequired()])
-    price = IntegerField('price', validators=[InputRequired()])
+    county = StringField('county', validators=[InputRequired()], render_kw={"placeholder": "County"})
+    locality = StringField('locality', validators=[InputRequired()], render_kw={"placeholder": "Locality"})
+    phone = StringField('phone', validators=[InputRequired()], render_kw={"placeholder": "Phone"})
+    price = IntegerField('price', validators=[InputRequired()], render_kw={"placeholder": "Price"})
 
 
 class SearchForm(FlaskForm):
