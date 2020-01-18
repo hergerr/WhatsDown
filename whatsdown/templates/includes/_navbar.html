@@ -11,6 +11,9 @@
                 <li><a href="{{ url_for('statistics') }}">Statistics</a></li>
                 {% if 'user' in session %}
                     <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('user_funerals') }}">Funerals</a></li>
+                    <li><a href="{{ url_for('user_buried') }}">Buried</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
                 {% endif %}
                 {% if 'admin' in session %}
                     <li><a href="/admin">Admin</a></li>

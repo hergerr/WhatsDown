@@ -4,7 +4,7 @@ const UIcontroller = (function () {
         modalEdit: '#modal-edit',
         modalDelete: '#modal-delete',
 
-        buriedTable: '#buried-table',
+        buriedTable: '.table-flex',
 
         btnEditItem: '.btn-edit-item',
         btnDeleteItem: '.btn-delete-item',

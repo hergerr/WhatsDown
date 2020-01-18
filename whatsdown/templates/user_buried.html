@@ -1,116 +1,117 @@
-{% extends 'base_user.html' %}
+{% extends 'base.html' %}
 
 {% block styles %}
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
           integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <link rel="stylesheet" href="../static/css/user_buried.css">
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/modal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/buried.css') }}">
 {% endblock %}>
 
 {% block content %}
 
     <div class="modal-container">
         <div class="modal" id="modal-edit">
-            <span class="fas fa-times btn-close-modal btn-close-edit">x</span>
-            <h3>Edycja rekordu</h3>
+            <span class="fas fa-times btn-close-modal btn-close-edit"></span>
+            <h3>Edit record</h3>
             <form class="form-edit" method="POST" action="{{ url_for('user_buried') }}">
                 {{ edit_buried_form.csrf_token }}
-                {{ edit_buried_form.id.label }} {{ edit_buried_form.id(class="input-edit-id") }}
-                {{ edit_buried_form.first_name.label }} {{ edit_buried_form.first_name(class="input-edit-first-name") }}
-                {{ edit_buried_form.last_name.label }} {{ edit_buried_form.last_name(class="input-edit-last-name") }}
-                {{ edit_buried_form.birth_date.label }} {{ edit_buried_form.birth_date(class="input-edit-birth-date") }}
-                {{ edit_buried_form.death_date.label }} {{ edit_buried_form.death_date(class="input-edit-death-date") }}
-                {{ edit_buried_form.cause_of_death.label }} {{ edit_buried_form.cause_of_death(class="input-edit-cause-of-death") }}<br>
-                {{ edit_buried_form.quarter.label }} {{ edit_buried_form.quarter }}<br>
-                {{ edit_buried_form.funeral.label }} {{ edit_buried_form.funeral }}<br>
-                {{ edit_buried_form.container.label }} {{ edit_buried_form.container }}<br>
-                {{ edit_buried_form.outfit.label }} {{ edit_buried_form.outfit }}
+                {{ edit_buried_form.id.label(class="label") }} {{ edit_buried_form.id(class="input-edit-id field") }}
+                {{ edit_buried_form.first_name.label(class="label") }} {{ edit_buried_form.first_name(class="input-edit-first-name field") }}
+                {{ edit_buried_form.last_name.label(class="label") }} {{ edit_buried_form.last_name(class="input-edit-last-name field") }}
+                {{ edit_buried_form.birth_date.label(class="label") }} {{ edit_buried_form.birth_date(class="input-edit-birth-date field") }}
+                {{ edit_buried_form.death_date.label(class="label") }} {{ edit_buried_form.death_date(class="input-edit-death-date field") }}
+                {{ edit_buried_form.cause_of_death.label(class="label") }} {{ edit_buried_form.cause_of_death(class="input-edit-cause-of-death field") }}<br>
+                {{ edit_buried_form.quarter.label(class="label") }} {{ edit_buried_form.quarter(class='combo-box') }}<br>
+                {{ edit_buried_form.funeral.label(class="label") }} {{ edit_buried_form.funeral(class='combo-box') }}<br>
+                {{ edit_buried_form.container.label(class="label") }} {{ edit_buried_form.container(class='combo-box') }}<br>
+                {{ edit_buried_form.outfit.label(class="label") }} {{ edit_buried_form.outfit(class='combo-box') }}
                 <button type="submit" class="btn btn-add btn-modal-item btn-edit-item">Edytuj</button>
             </form>
         </div>
 
         <div class="modal" id="modal-delete">
-            <span class="fas fa-times btn-close-modal btn-close-delete">x</span>
-            <h3>Usuwanie rekordu</h3>
+            <span class="fas fa-times btn-close-modal btn-close-delete"></span>
+            <h3>Remove record</h3>
             <form method="POST" action="{{ url_for('user_buried') }}">
                 {{ delete_record_form.csrf_token }}
-                {{ delete_record_form.id.label }} {{ delete_record_form.id(class_="input-delete-id") }}
+                {{ delete_record_form.id.label(class="label") }} {{ delete_record_form.id(class="input-delete-id field") }}
                 <button type="submit" class="btn btn-add btn-modal-item btn-delete-item">Usuń</button>
             </form>
         </div>
     </div>
 
+    <div class="form-box">
 
-    {% for mess in get_flashed_messages() %}
-    <div class="flash-message" role="alert">
-        {{ mess }}
-        <span class="fas fa-times btn-close-modal btn-close-flash"></span>
-    </div>
-    {% endfor %}
+        {% for mess in get_flashed_messages() %}
+            <div class="flash-message" role="alert">
+                {{ mess }}
+                <span class="fas fa-times btn-close-modal btn-close-flash"></span>
+            </div>
+        {% endfor %}
 
-    <h2>Dodaj pochowanego do wybranej kwatery</h2>
-    <form action="{{url_for('user_buried')}}" method="POST">
-        {{ buried_form.csrf_token }}
-        {{ buried_form.first_name.label }} {{ buried_form.first_name }}
-        {{ buried_form.last_name.label }} {{ buried_form.last_name }}
-        {{ buried_form.birth_date.label }} {{ buried_form.birth_date }}
-        {{ buried_form.death_date.label }} {{ buried_form.death_date }}
-        {{ buried_form.cause_of_death.label }} {{ buried_form.cause_of_death }}
-        {{ buried_form.quarter.label }} {{ buried_form.quarter }}
-        {{ buried_form.funeral.label }} {{ buried_form.funeral }}
-        {{ buried_form.container.label }} {{ buried_form.container }}
-        {{ buried_form.outfit.label }} {{ buried_form.outfit }}
+        <h2>Add buried to a quarter</h2>
+        <form action="{{ url_for('user_buried') }}" method="POST">
+            {{ buried_form.csrf_token }}
+            {{ buried_form.first_name(class='first-name-field') }}
+            {{ buried_form.cause_of_death(class='cause-of-death-field') }}
+            {{ buried_form.quarter(class='quarter-field') }}
+            {{ buried_form.funeral(class='funeral-field') }}
+            {{ buried_form.container(class='container-field') }}
+            {{ buried_form.outfit(class='outfit-field') }}
+            {{ buried_form.last_name(class='last-name-field') }}
+            {{ buried_form.birth_date.label(class='birth-label') }} {{ buried_form.birth_date(class='birth-field') }}
+            {{ buried_form.death_date.label(class='death-label') }} {{ buried_form.death_date(class='death-field') }}
 
-        <button type="submit">Dodaj</button>
-    </form>
+            <button class="button" type="submit">Add</button>
+        </form>
 
-    <h5>Zakończ pochówek, ustawiając nagrobek na zapełnionej kwaterze</h5>
-    <form action="{{url_for('user_buried')}}" method="POST">
-        {{ set_tombstone_form.csrf_token }}
-        {{ set_tombstone_form.quarter.label }} {{ set_tombstone_form.quarter }}
-        {{ set_tombstone_form.tombstone.label }} {{ set_tombstone_form.tombstone }}
+        <h5>End burial by setting tombstone on filled quarter</h5>
+        <form action="{{ url_for('user_buried') }}" method="POST">
+            {{ set_tombstone_form.csrf_token }}
+            {{ set_tombstone_form.quarter(class='quarter-field') }}
+            {{ set_tombstone_form.tombstone(class='tombstone-field') }}
 
-        <button type="submit">Ustaw</button>
-    </form>
-
-    <div id="buried-table">
-    <h2>Pochowani</h2>
-    <table>
-      <tr>
-          {% for columnn in buried_header %}
-            <th>{{ columnn }}</th>
-          {% endfor %}
-       </tr>
-      {% for bur in buried %}
-          <tr id="item-{{ bur.id }}">
-            <td><img class="btn btn-remove" src="../static/img/icon-remove.svg" alt="Remove"></td>
-            <td>{{ bur.id }}</td>
-            <td>{{ bur.first_name }}</td>
-            <td>{{ bur.last_name }}</td>
-              {% if bur.birth_date is not none %}
-                <td>{{ bur.birth_date }}</td>
-              {% else %}
-                <td>brak</td>
-              {% endif %}
-              {% if bur.death_date is not none %}
-                <td>{{ bur.death_date }}</td>
-              {% else %}
-                <td>brak</td>
-              {% endif %}
-              {% if bur.cause_of_death == '' or bur.cause_of_death is none%}
-                  <td>brak</td>
-              {% else %}
-                <td>{{ bur.cause_of_death }}</td>
-              {% endif %}
-            <td>{{ bur.quarter }}</td>
-            <td>{{ bur.funeral }}</td>
-            <td>{{ bur.container }}</td>
-            <td>{{ bur.outfit }}</td>
-            <td><img class="btn btn-edit" src="../static/img/icon-edit.svg" alt="Edit"></td>
-        </tr>
-      {% endfor %}
-    </table>
+            <button class="button" type="submit">Set</button>
+        </form>
     </div>
 
-    <script src="../static/js/user_buried.js"></script>
-    <script src="../static/js/flask_msg_controller.js"></script>
+    <div class="table-flex">
+        <table class="filter-table">
+            <tr class="head-row">
+                {% for columnn in buried_header %}
+                    <th>{{ columnn.upper().replace("_", " ") }}</th>
+                {% endfor %}
+            </tr>
+            {% for bur in buried %}
+                <tr class="regular-row" id="item-{{ bur.id }}">
+                    <td><img class="btn btn-remove" src="{{ url_for('.static', filename='img/icon-remove.svg') }}" alt="Remove"></td>
+                    <td>{{ bur.id }}</td>
+                    <td>{{ bur.first_name }}</td>
+                    <td>{{ bur.last_name }}</td>
+                    {% if bur.birth_date is not none %}
+                        <td>{{ bur.birth_date }}</td>
+                    {% else %}
+                        <td>brak</td>
+                    {% endif %}
+                    {% if bur.death_date is not none %}
+                        <td>{{ bur.death_date }}</td>
+                    {% else %}
+                        <td>brak</td>
+                    {% endif %}
+                    {% if bur.cause_of_death == '' or bur.cause_of_death is none %}
+                        <td>brak</td>
+                    {% else %}
+                        <td>{{ bur.cause_of_death }}</td>
+                    {% endif %}
+                    <td>{{ bur.quarter }}</td>
+                    <td>{{ bur.funeral }}</td>
+                    <td>{{ bur.container }}</td>
+                    <td>{{ bur.outfit }}</td>
+                    <td><img class="btn btn-edit" src="{{ url_for('.static', filename='img/icon-edit.svg') }}" alt="Edit"></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <script src="{{ url_for('.static', filename='js/user_buried.js') }}"></script>
 {% endblock %}

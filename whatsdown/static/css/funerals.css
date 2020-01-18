@@ -1,0 +1,112 @@
+h2, h5 {
+    color: white;
+}
+
+.form-box {
+    margin: 100px 0 30px 50px;
+}
+
+.date-field {
+    border-radius: 15px;
+    border-color: #c4c4c4;
+    padding: 5px 0;
+    width: 250px;
+    background: rgba(196, 196, 196, 1);
+    color: white;
+}
+
+.priest-temple-field {
+    border-radius: 15px;
+    border-color: #c4c4c4;
+    padding: 5px 0;
+    width: 320px;
+    background: rgba(196, 196, 196, 1);
+    color: white;
+}
+
+.button {
+    padding: 5px 15px;
+    background-color: #575957;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+.table-flex {
+    display: flex;
+    flex-flow: column;
+}
+
+
+table {
+    width: 100%;
+    table-layout: fixed;
+    position: relative;
+    font-family: "Habibi", sherif;
+    font-size: small;
+    border-collapse: collapse;
+}
+
+tr {
+}
+
+tr:nth-child(even) {
+    background-color: rgba(88, 96, 99, 0.9);
+}
+
+tr:nth-child(odd) {
+    background-color: rgba(51, 53, 51, 0.9);
+}
+
+
+tr:hover {
+    background-color: #868e8c;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}
+
+@media (max-width: 700px) {
+    tr {
+        display: flex;
+        flex-direction: column;
+    }
+
+    h2, h5 {
+        color: black;
+        text-align: center;
+    }
+
+    .head-row {
+        position: fixed;
+        width: 180px;
+        top: 350px;
+        left: 0;
+        z-index: 2;
+        padding-top: 8px;
+        padding-bottom: 4px;
+        border-radius: 0;
+    }
+
+    .regular-row {
+        border-radius: 0;
+        padding-top: 10px;
+        padding-left: 190px;
+        margin: 20px 0;
+    }
+
+    .priest-temple-field {
+        margin-top: 20px;
+        width: 80%;
+    }
+
+    .button {
+        display: block;
+        margin: 15px auto;
+    }
+}

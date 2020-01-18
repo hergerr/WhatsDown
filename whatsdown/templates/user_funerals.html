@@ -1,59 +1,60 @@
-{% extends 'base_user.html' %}
+{% extends 'base.html' %}
 
 {% block styles %}
-
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/modal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/funerals.css') }}">
 {% endblock %}
 
 
 {% block content %}
-
-    <link rel="stylesheet" href="../static/css/modal.css">
-
-
     <div class="modal-container">
         <div class="modal" id="modal-edit">
-            <span class="fas fa-times btn-close-modal btn-close-edit">x</span>
-            <h3>Edycja rekordu</h3>
+            <span class="fas fa-times btn-close-modal btn-close-edit"></span>
+            <h3>Edit record</h3>
             <form class="form-edit" method="POST" action="{{ url_for('user_funerals') }}">
                 {{ edit_funeral_form.csrf_token }}
-                {{ edit_funeral_form.id.label }} {{ edit_funeral_form.id(class="input-edit-id") }}
-                {{ edit_funeral_form.date.label }} {{ edit_funeral_form.date(class="input-edit-date") }}
-                {{ edit_funeral_form.priest_temple.label }} {{ edit_funeral_form.priest_temple }}
-                <button type="submit" class="btn btn-add btn-modal-item btn-edit-item">Edytuj</button>
+                {{ edit_funeral_form.id.label(class="label") }} {{ edit_funeral_form.id(class="input-edit-id field") }}
+                {{ edit_funeral_form.date.label(class="label") }} {{ edit_funeral_form.date(class="input-edit-date field") }}
+                {{ edit_funeral_form.priest_temple.label(class="label") }} {{ edit_funeral_form.priest_temple(class="field combo-box") }}
+                <button type="submit" class="btn btn-add btn-modal-item btn-edit-item">Edit</button>
             </form>
         </div>
 
         <div class="modal" id="modal-delete">
-            <span class="fas fa-times btn-close-modal btn-close-delete">x</span>
-            <h3>Usuwanie rekordu</h3>
+            <span class="fas fa-times btn-close-modal btn-close-delete"></span>
+            <h3>Remove record</h3>
             <form method="POST" action="{{ url_for('user_funerals') }}">
                 {{ delete_record_form.csrf_token }}
-                {{ delete_record_form.id.label }} {{ delete_record_form.id(class_="input-delete-id") }}
-                <button type="submit" class="btn btn-add btn-modal-item btn-delete-item">Usuń</button>
+                {{ delete_record_form.id.label(class="label") }} {{ delete_record_form.id(class="input-delete-id field") }}
+                <button type="submit" class="btn btn-add btn-modal-item btn-delete-item">Remove</button>
             </form>
         </div>
     </div>
 
 
-    <h2>Dodaj pogrzeb</h2>
-    <form action="{{ url_for('user_funerals') }}" method="POST">
-        {{ funeral_form.hidden_tag() }}
-        {{ funeral_form.date.label }}{{ funeral_form.date }}
-        {{ funeral_form.priest_temple.label }}{{ funeral_form.priest_temple }}
-        <button type="submit" class="btn">Dodaj</button>
-    </form>
+    <div class="form-box">
+    <h2>Add funeral</h2>
+        <form action="{{ url_for('user_funerals') }}" method="POST">
+            {{ funeral_form.hidden_tag() }}
+            {{ funeral_form.date(class='date-field') }}
+            {{ funeral_form.priest_temple(class='priest-temple-field') }}
+            <button type="submit" class="button">Add</button>
+        </form>
+    </div>
 
-    <div id="funerals-table">
-        <h2>Pogrzeby</h2>
-        <table>
-            <tr>
+
+    <div class="table-flex">
+        <table class="filter-table">
+            <tr class="head-row">
                 {% for columnn in funeral_header %}
-                    <th>{{ columnn }}</th>
+                    <th>{{ columnn.upper().replace("_", " ") }}</th>
                 {% endfor %}
             </tr>
             {% for fun in funerals %}
-                <tr id="item-{{ fun.id }}">
-                    <td><img class="btn btn-remove" src="../static/img/icon-remove.svg" alt="Remove"></td>
+                <tr class="regular-row" id="item-{{ fun.id }}">
+                    <td><img class="btn btn-remove" src="{{ url_for('.static', filename='img/icon-remove.svg') }}" alt="Remove"></td>
                     <td>{{ fun.id }}</td>
                     <td>{{ fun.date }}</td>
                     <td>{{ fun.total_price }}</td>
@@ -67,12 +68,12 @@
                         {% endif %}
                     </td>
                     <td>{{ fun.priest_temple }}</td>
-                    <td><img class="btn btn-edit" src="../static/img/icon-edit.svg" alt="Edit"></td>
+                    <td><img class="btn btn-edit" src="{{ url_for('.static', filename='img/icon-edit.svg') }}" alt="Edit"></td>
                 </tr>
             {% endfor %}
         </table>
     </div>
 
-    <script src="../static/js/user_funerals.js"></script>
+    <script src="{{ url_for('.static', filename='js/user_funerals.js') }}"></script>
 
 {% endblock %}

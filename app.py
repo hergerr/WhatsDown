@@ -432,8 +432,8 @@ def user_buried():
             return redirect(url_for('user_buried'))
 
     buried = Buried.query.join(Funeral).join(FuneralHome).filter_by(name=session['username']).all()
-    buried_header = ['id', 'first_name', 'last_name', 'birth_date', 'death_date', 'cause_of_death', 'quarter',
-                     'funeral', 'container', 'outfit']
+    buried_header = ['', 'id', 'first_name', 'last_name', 'birth_date', 'death_date', 'cause_of_death', 'quarter',
+                     'funeral', 'container', 'outfit', '']
 
     return render_template('user_buried.html', buried_form=buried_form, buried=buried,
                            buried_header=buried_header, delete_record_form=delete_record_form,
@@ -484,7 +484,7 @@ def user_funerals():
         print('Form not valid')
 
     funerals = Funeral.query.join(FuneralHome).filter(FuneralHome.name == session['username']).all()
-    funeral_header = ['id', 'date', 'total_price', 'buried on this funeral', 'priest and temple']
+    funeral_header = ['', 'id', 'date', 'total_price', 'buried on this funeral', 'priest and temple', '']
 
     return render_template('user_funerals.html', funeral_form=funeral_form, funerals=funerals,
                            funeral_header=funeral_header, delete_record_form=delete_record_form,

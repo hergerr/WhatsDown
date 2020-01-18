@@ -74,11 +74,11 @@ class AddFuneralForm(FlaskForm):
 
 
 class AddBuriedForm(FlaskForm):
-    first_name = StringField('first name', validators=[InputRequired()])
-    last_name = StringField('last name', validators=[InputRequired()])
+    first_name = StringField('first name', validators=[InputRequired()], render_kw={"placeholder": "First name"})
+    last_name = StringField('last name', validators=[InputRequired()], render_kw={"placeholder": "Last name"})
     birth_date = DateField('birth date', validators=[Optional()])
     death_date = DateField('death date', validators=[Optional()])
-    cause_of_death = StringField('cause of death', validators=[Optional()])
+    cause_of_death = StringField('cause of death', validators=[Optional()], render_kw={"placeholder": "Cause of death"})
     quarter = QuerySelectField('quarter', query_factory=lambda: Quarter.query.filter(Quarter.tombstone == None).all(),
                                validators=[InputRequired()])
     funeral = QuerySelectField('funeral', query_factory=lambda: Funeral.query.join(FuneralHome)

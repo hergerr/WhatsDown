@@ -4,7 +4,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 4;
   background-color: rgba(0, 0, 0, 0.2);
   display: none;
 }
@@ -23,17 +23,30 @@
   border: 1px solid #E3E3E3;
 }
 .modal .btn-modal-item {
+  cursor: pointer;
   position: static;
+  background-color: #575957;
+  border-radius: 10px;
+  color: white;
+  padding: 5px 10px;
   display: block;
-  margin-top: 50px;
-  width: 50px;
-  margin: 0 auto;
-  margin-top: 25px;
+  margin: 50px auto 0 auto;
 }
 .modal h3 {
   font-size: 16px;
   color: #333;
   margin-bottom: 30px;
+}
+
+.field, .label{
+  display: block;
+  margin: 14px auto;
+  text-align: center;
+}
+
+.combo-box{
+  background: #F6F6F6;
+  width: 80%;
 }
 
 #modal-edit {
