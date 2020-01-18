@@ -138,9 +138,11 @@ body {
     /* hamburger */
     #menuToggle {
         display: block;
-        position: relative;
-        left: 50px;
-        z-index: 1;
+        position: fixed;
+        top: 40px;
+        left: 40px;
+        width: 100px;
+        z-index: 3;
         -webkit-user-select: none;
         user-select: none;
     }

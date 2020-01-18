@@ -10,13 +10,13 @@
     <div class="table-flex">
     <table class="filter-table">
 
-        <tr>
+        <tr class="head-row">
             {% for column_name in column_names %}
                 <th>{{ column_name.upper().replace("_", " ") }}</th>
             {% endfor %}
         </tr>
         {% for record in query_records %}
-            <tr>
+            <tr class="regular-row">
                 {% for column_name in column_names %}
                     <td>{{ record[column_name] }}</td>
                 {% endfor %}

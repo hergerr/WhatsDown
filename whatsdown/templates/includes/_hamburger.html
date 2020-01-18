@@ -21,6 +21,8 @@
     but hey, it's pure CSS magic.
     -->
     <ul id="menu">
+        <a href="{{ url_for('home_page') }}">
+            <img class="whatsdown-logo" src="{{ url_for('.static', filename='img/whatsdown-icon.ico') }}"></a>
         <a href="{{ url_for('login') }}"><li>Login</li></a>
         <a href="{{ url_for('signup_user') }}"><li>Sign Up</li></a>
         <a href="{{ url_for('statistics') }}"><li>Statistics</li></a>
