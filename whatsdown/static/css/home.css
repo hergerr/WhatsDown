@@ -6,7 +6,7 @@
 .title {
     font-family: 'IM Fell English', serif;
     font-size: 80px;
-    color: white;
+    color: #f2f0ea;;
     text-align: center;
     margin-top: 170px;
     font-weight: lighter;
@@ -47,7 +47,6 @@
 @media(max-width: 700px) {
     .title {
         font-size: 45px;
-        color: black;
     }
 
     .phrase {
