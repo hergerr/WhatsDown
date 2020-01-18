@@ -1,0 +1,87 @@
+html {
+    background: url("../img/groby.jpg") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.table-flex {
+    display: flex;
+    flex-flow: column;
+}
+
+table {
+    width: 100%;
+    table-layout:fixed;
+    position: relative;
+    font-family: "Habibi", sherif;
+    font-size: small;
+    border-collapse: collapse;
+    margin-top: 130px;
+
+}
+
+tr:nth-child(even) {
+    background-color: rgba(88, 96, 99, 0.9);
+}
+
+tr:nth-child(odd) {
+    background-color: rgba(51, 53, 51, 0.9);
+}
+
+
+tr:hover {
+    background-color: #868e8c;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+ .filter-form {
+     padding: 5px 10px;
+     position: fixed;
+     top: 70px;
+     right: 0;
+     z-index: 2;
+ }
+
+
+ .filter-btn {
+     font-size: 16px;
+     font-weight: bolder;
+     margin: 10px 10px;
+     border-radius: 4px;
+     background-color: #868e8c;
+     color: white;
+     padding: 5px;
+ }
+
+
+ .filter-text {
+    width: 400px;
+    height: 25px;
+    border-radius: 4px;
+    background-color: #868e8c;
+    color: white;
+    padding: 5px;
+}
+
+.filter-text:hover {
+    border-color: #0e1428
+ }
+
+
+ .filter-text:focus {
+     border-color: #0e1428
+ }
+
+ .filter-btn:hover {
+     border-color: #0e1428;
+ }
+

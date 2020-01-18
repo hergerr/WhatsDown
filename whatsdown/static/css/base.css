@@ -12,6 +12,7 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    color: #f2f0ea
 }
 
 * {
@@ -23,8 +24,12 @@ body {
     flex-direction: row;
     width: 100%;
     justify-content: space-between;
-    background: rgba(196, 196, 196, 0.5);
-    font-size: 13px;
+    background: rgba(196, 196, 196, 0.9);
+    font-size: 16px;
+     position: fixed;
+     top: 0;
+     right: 0;
+     z-index: 2;
 }
 
 .navbar-logo {
@@ -44,12 +49,18 @@ body {
 .navbar-logo a:hover {
 }
 
+.whatsdown-logo {
+    width: 70px;
+    padding: 10px 10px;
+}
+
 .navbar-list {
     list-style: none;
     text-align: right;
     float: left;
     align-self: flex-end;
     z-index: 2;
+    padding: 0px 10px;
 }
 
 .navbar-list li {
@@ -60,7 +71,7 @@ body {
 
 .navbar-list li a {
     text-decoration: none;
-    color: black;
+    color: #f2f0ea;
 }
 
 .footer {

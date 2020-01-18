@@ -1,0 +1,4 @@
+<form class="filter-form" method="GET" name="filter" action={{ url_for('filter',  resource=resource)}}>
+    {{ form.text(class="filter-text") }}
+<button class="filter-btn" type="submit">Filter</button>
+</form>

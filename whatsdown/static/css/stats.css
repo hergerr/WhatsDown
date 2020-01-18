@@ -1,6 +1,10 @@
 html {
-    background: rgba(245, 245, 245, 1);
+    background: #333533;
 }
+
+ body {
+     color: #f2f0ea;
+ }
 
 .container {
     display: flex;

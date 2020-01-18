@@ -48,7 +48,7 @@ class RegisterUserForm(FlaskForm):
 
 
 class SearchForm(FlaskForm):
-    phrase = StringField(render_kw={"placeholder": "Enter the phrase you or leave empty"})
+    phrase = StringField(render_kw={"placeholder": "Enter the search phrase or leave the field empty"})
     category = SelectField(render_kw={"placeholder": "Choose the category you want to search in"}, choices=[
         ('buried', 'Buried'),
         ('funeral', 'Funeral'),
@@ -64,7 +64,7 @@ class SearchForm(FlaskForm):
 
 
 class FilterForm(FlaskForm):
-    text = StringField('Enter a phrase to filter the results or leave the field empty to unfilter')
+    text = StringField(render_kw={"placeholder": "Enter a phrase to filter or leave the field empty to unfilter"})
 
 
 class AddFuneralForm(FlaskForm):

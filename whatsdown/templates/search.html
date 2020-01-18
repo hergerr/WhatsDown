@@ -1,15 +1,18 @@
+{% extends 'base.html' %}
 {% block styles %}
-{#    <link rel="stylesheet" href="{{ url_for('.static', filename='css/starter-template.css') }}">#}
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/search_and_filter.css') }}">
 {% endblock %}
 
 {% block content %}
 
-    {#    TODO: Move all styles to css file. HTML inline styles are antipattern #}
-    <table style="width:100%">
+    {% include 'includes/_filter_form.html' %}
+
+    <div class="table-flex">
+    <table class="filter-table">
 
         <tr>
             {% for column_name in column_names %}
-                <th>{{ column_name }}</th>
+                <th>{{ column_name.upper().replace("_", " ") }}</th>
             {% endfor %}
         </tr>
         {% for record in query_records %}
@@ -20,14 +23,7 @@
             </tr>
         {% endfor %}
     </table>
+    </div>
 
-
-    <form method="GET" name="filter" action={{ url_for('filter', resource=resource)}}>
-        <div class="form-group">
-            {{ form.text.label }}{{ form.text }}
-        </div>
-
-        <button class="btn" type="submit">Filter</button>
-    </form>
 
 {% endblock %}
