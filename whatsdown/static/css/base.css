@@ -114,7 +114,7 @@ body {
     }
 
     #menuToggle a:hover {
-        color: tomato;
+        color: lightgrey;
     }
 
 
@@ -216,7 +216,7 @@ body {
     }
 
     #menu li:hover {
-        color: #ff8a00;
+        color: darkgrey;
     }
 
     #menuToggle input:checked ~ ul {
