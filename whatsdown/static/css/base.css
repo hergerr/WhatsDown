@@ -82,9 +82,30 @@ body {
     font-size: 13px;
 }
 
+.flash-message {
+  position: relative;
+  background-color: #E93838;
+  width: 300px;
+  padding: 20px;
+  margin-top: 40px;
+  color: white;
+  border-radius: 7px;
+    z-index: 1;
+  -webkit-box-shadow: 0 4px 25px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 25px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.btn-close-flash {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  cursor: pointer;
+}
+
 @media (max-width: 700px) {
     html {
-        background: rgba(245, 245, 245, 1);
+        background: #333533;
     }
 
     .guest-navbar {
