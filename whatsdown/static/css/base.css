@@ -50,8 +50,9 @@ body {
 }
 
 .whatsdown-logo {
-    width: 70px;
-    padding: 10px 10px;
+    width: 35px;
+    padding: 5px;
+    margin-left: 10px;
 }
 
 .navbar-list {

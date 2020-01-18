@@ -1,7 +1,7 @@
 <nav class="guest-navbar">
         <div class="navbar-logo">
             <a href="{{ url_for('home_page') }}">
-                 <img class="whatsdown-logo" src="../static/img/whatsdown-logo.png">
+                 <img class="whatsdown-logo" src="{{ url_for('.static', filename='img/whatsdown-icon.ico') }}">
             </a>
         </div>
         <div class="navbar-list">

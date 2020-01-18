@@ -72,6 +72,10 @@ th, td {
     padding: 5px;
 }
 
+.filter-text::placeholder{
+    color: white;
+}
+
 .filter-text:hover {
     border-color: #0e1428
  }
