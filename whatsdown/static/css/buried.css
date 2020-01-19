@@ -112,7 +112,7 @@ th, td {
     .head-row {
         position: fixed;
         width: 180px;
-        top: 350px;
+        top: 250px;
         left: 0;
         z-index: 2;
         padding-top: 8px;
