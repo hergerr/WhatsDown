@@ -10,16 +10,14 @@
 
     <h1 class="title">WhatsDown</h1>
 
+    {% for mess in get_flashed_messages() %}
+        <div class="flash-message" role="alert">
+            <strong>Error!</strong> {{ mess }}
+            <span class="fas fa-times btn-close-modal btn-close-flash"></span>
+        </div>
+    {% endfor %}
+
     <div class="form-box">
-
-        {% for mess in get_flashed_messages() %}
-            <div class="flash-message" role="alert">
-                <strong>Error!</strong> {{ mess }}
-                <span class="fas fa-times btn-close-modal btn-close-flash"></span>
-            </div>
-        {% endfor %}
-
-
         <form class="form-login" method="POST" action="/login">
             {{ form.hidden_tag() }}
             {{ form.username(class='username-field')}}
