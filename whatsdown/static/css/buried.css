@@ -105,7 +105,7 @@ th, td {
     }
 
     h2, h5 {
-        color: black;
+        color: white;
         text-align: center;
     }
 
@@ -145,7 +145,7 @@ th, td {
     }
 
     .birth-label, .death-label {
-        color: black;
+        color: white;
         display: block;
         margin: 15px auto;
         text-align: center;
