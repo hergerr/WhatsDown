@@ -53,12 +53,12 @@
         <form action="{{ url_for('user_buried') }}" method="POST">
             {{ buried_form.csrf_token }}
             {{ buried_form.first_name(class='first-name-field') }}
+            {{ buried_form.last_name(class='last-name-field') }}
             {{ buried_form.cause_of_death(class='cause-of-death-field') }}
             {{ buried_form.quarter(class='quarter-field') }}
             {{ buried_form.funeral(class='funeral-field') }}
             {{ buried_form.container(class='container-field') }}
             {{ buried_form.outfit(class='outfit-field') }}
-            {{ buried_form.last_name(class='last-name-field') }}
             {{ buried_form.birth_date.label(class='birth-label') }} {{ buried_form.birth_date(class='birth-field') }}
             {{ buried_form.death_date.label(class='death-label') }} {{ buried_form.death_date(class='death-field') }}
 
