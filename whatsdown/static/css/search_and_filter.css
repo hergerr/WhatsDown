@@ -11,6 +11,7 @@ table {
     font-size: small;
     border-collapse: collapse;
     margin-top: 130px;
+    color: white;
 
 }
 
@@ -19,7 +20,7 @@ tr:nth-child(even) {
 }
 
 tr:nth-child(odd) {
-    background-color: rgba(51, 53, 51, 0.9);
+    background-color: rgba(100 ,100, 100, 0.9);
 }
 
 
@@ -107,7 +108,7 @@ th, td {
          margin: 20px 0;
      }
     .filter-text {
-        width: 325px;
+        width: 180px;
     }
 
     .filter-form {
@@ -116,4 +117,6 @@ th, td {
         top: 20px;
         left: 90px;
     }
+
+
  }

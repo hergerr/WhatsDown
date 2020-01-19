@@ -50,7 +50,7 @@ h1, h2 {
 
 @media (max-width: 700px) {
     h1, h2 {
-        color: black;
+        color: white;
     }
 
     h2 {

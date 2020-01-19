@@ -64,7 +64,7 @@ class SearchForm(FlaskForm):
 
 
 class FilterForm(FlaskForm):
-    text = StringField(render_kw={"placeholder": "Enter a phrase to filter or leave the field empty to unfilter"})
+    text = StringField(render_kw={"placeholder": "Enter a phrase to filter"})
 
 
 class AddFuneralForm(FlaskForm):

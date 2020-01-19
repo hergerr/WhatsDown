@@ -42,6 +42,8 @@
         font-weight: lighter;
         font-size: 45px;
         font-family: 'IM Fell English', serif;
+        color: white;
+        padding-bottom: 10px;
     }
 
     .username-field, .password-field {

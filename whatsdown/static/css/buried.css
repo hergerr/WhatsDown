@@ -69,8 +69,9 @@ table {
     table-layout: fixed;
     position: relative;
     font-family: "Habibi", sherif;
-    font-size: small;
+    font-size: x-small;
     border-collapse: collapse;
+    color: white;
 }
 
 tr {
@@ -81,7 +82,7 @@ tr:nth-child(even) {
 }
 
 tr:nth-child(odd) {
-    background-color: rgba(51, 53, 51, 0.9);
+    background-color: rgba(100 ,100, 100, 0.9);
 }
 
 

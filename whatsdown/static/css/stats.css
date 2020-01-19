@@ -44,6 +44,11 @@ html {
 }
 
 @media (max-width: 700px) {
+
+    body {
+        background: #454745;
+    }
+
     .title {
         font-size: 45px;
     }
