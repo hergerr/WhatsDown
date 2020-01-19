@@ -1,7 +1,7 @@
 .form-box {
     width: 250px;
     background: rgba(196, 196, 196, 0.7);
-    margin: 200px auto 0 auto;
+    margin: 30vh auto 0 auto;
     padding: 30px 30px 10px 30px;
     border-radius: 20px;
 }
@@ -37,7 +37,7 @@
 @media(max-width: 700px) {
     .title {
         display: block;
-        margin: 170px auto 0px auto;
+        margin: 17vh auto 30px auto;
         text-align: center;
         font-weight: lighter;
         font-size: 45px;

@@ -5,7 +5,7 @@ h1, h2 {
 .form-box {
     width: 350px;
     background: rgba(196, 196, 196, 0.7);
-    margin: 100px auto 0 auto;
+    margin: 7vh auto 0 auto;
     padding: 30px 30px 10px 30px;
     border-radius: 20px;
 }
@@ -17,7 +17,7 @@ h1, h2 {
 
 .greeting {
     font-weight: bolder;
-    margin-top: 170px;
+    margin-top: 15vh;
 }
 
 .edit-title {
@@ -62,7 +62,6 @@ h1, h2 {
     }
 
     .form-box {
-        margin: 0 auto;
         width: 70vw;
         background: rgba(245, 245, 245, 1);
     }

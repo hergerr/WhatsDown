@@ -36,8 +36,9 @@
 
 @media(max-width: 700px) {
     .title {
+        color: white;
         display: block;
-        margin: 170px auto 0px auto;
+        margin: 17vh auto 30px auto;
         text-align: center;
         font-weight: lighter;
         font-size: 45px;
