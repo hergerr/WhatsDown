@@ -4,3 +4,4 @@ venv/
 .indexes
 whoosh/*
 whooshee_indexes/*
+*.log
