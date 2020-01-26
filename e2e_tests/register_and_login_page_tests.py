@@ -4,7 +4,7 @@ from selenium.webdriver.common.keys import Keys
 from time import sleep
 
 
-class RegistrationPage(unittest.TestCase):
+class RegistrationAndLoginPage(unittest.TestCase):
 
     def setUp(self):
         self.driver = webdriver.Firefox()

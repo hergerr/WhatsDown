@@ -4,16 +4,13 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from time import sleep
 
 
-class RegistrationPage(unittest.TestCase):
+class SearchaAndFilterPage(unittest.TestCase):
 
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.wait = WebDriverWait(self.driver, 4)
-
-
 
     def test01_empty_field_should_not_filter(self):
         self.driver.get("https://whatsdown.tscode.net/")
