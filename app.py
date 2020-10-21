@@ -9,6 +9,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from whatsdown.utils import check_logged_in_user
 from flask_whooshee import *
 
+from android_views import *
+
 ws = WhoosheeQuery.whooshee_search
 
 
